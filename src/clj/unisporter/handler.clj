@@ -37,7 +37,7 @@
 
 (api/defroutes app-routes
   (api/undocumented
-    ))
+   (api/GET "/" [] (render "index.html"))))
 
 (api/defroutes api-routes
   )
