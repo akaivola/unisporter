@@ -119,7 +119,7 @@
 
   :main unisporter.server
 
-  :aot []
+  :aot [manifold.deferred]
 
   :uberjar-name "unisporter.jar"
 
