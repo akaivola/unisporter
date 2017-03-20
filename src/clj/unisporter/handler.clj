@@ -27,7 +27,7 @@
 ;; through unchanged so that the thread won't be blocked.
 ;; (this allows you to return deferreds)
 (extend-protocol Renderable
-  manifold.deferred.Deferred
+  Deferred
   (render [d _] d))
 
 (defn- render [file & [context-map]]
