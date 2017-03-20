@@ -1,6 +1,6 @@
 (ns unisporter.events
     (:require [re-frame.core :as re-frame]
-              [iamfoxy.db :as db]))
+              [unisporter.db :as db]))
 
 (re-frame/reg-event-db
  :initialize-db

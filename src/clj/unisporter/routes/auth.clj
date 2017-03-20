@@ -1,4 +1,4 @@
-(ns iamfoxy.routes.auth
+(ns unisporter.routes.auth
   (:require
    [compojure.api.sweet :as api]
    [environ.core :refer [env]]
