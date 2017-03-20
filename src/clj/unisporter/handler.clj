@@ -1,4 +1,6 @@
 (ns unisporter.handler
+  (:import
+   [manifold.deferred Deferred])
   (:require
     [unisporter.middleware.basic-auth :as auth-middleware]
     [cheshire.generate :refer [add-encoder]]

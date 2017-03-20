@@ -1,6 +1,6 @@
-(ns iamfoxy.core-test
+(ns unisporter.core-test
   (:require [cljs.test :refer-macros [deftest testing is]]
-            [iamfoxy.core :as core]))
+            [unisporter.core :as core]))
 
 (deftest fake-test
   (testing "fake description"
