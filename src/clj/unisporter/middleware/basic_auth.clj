@@ -1,4 +1,4 @@
-(ns iamfoxy.middleware.basic-auth
+(ns unisporter.middleware.basic-auth
   (:require
     [buddy.auth.middleware :refer [wrap-authentication wrap-authorization]]
     [buddy.auth.backends.httpbasic :refer [http-basic-backend]]

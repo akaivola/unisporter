@@ -1,4 +1,4 @@
-(ns iamfoxy.views
+(ns unisporter.views
     (:require [re-frame.core :as re-frame]))
 
 (defn main-panel []

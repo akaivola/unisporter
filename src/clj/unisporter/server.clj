@@ -21,8 +21,8 @@
 
 (def server (atom nil))
 
-(defn start [& {:keys [port repl-port] :or {port 3000
-                                            repl-port 3001}}]
+(defn start [& {:keys [port repl-port] :or {port 4000
+                                            repl-port 4001}}]
   (let [handler (cond-> handler
                     (:dev? env) (wrap-reload))
         server_ (reset! server (http/start-server handler {:port port}))]
@@ -35,6 +35,6 @@
   (.close @server))
 
 (defn -main [& args]
-  (let [port (Integer/parseInt (or (env :port) "3000"))]
+  (let [port (Integer/parseInt (or (env :port) "4000"))]
     (start :port port)
     @(promise)))

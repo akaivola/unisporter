@@ -1,10 +1,10 @@
-(ns iamfoxy.ajax
+(ns unisporter.ajax
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
    [re-frame.core :as r]
    [cljs-http.client :as http]
    [cljs.core.async :refer [<! timeout]]
-   [iamfoxy.config :as config]
+   [unisporter.config :as config]
    [taoensso.timbre :refer-macros [spy debug]]))
 
 (def token (atom nil))

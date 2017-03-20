@@ -1,11 +1,11 @@
-(ns iamfoxy.core
+(ns unisporter.core
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [re-frisk.core :refer [enable-re-frisk!]]
-            [iamfoxy.events]
-            [iamfoxy.subs]
-            [iamfoxy.views :as views]
-            [iamfoxy.config :as config]))
+            [unisporter.events]
+            [unisporter.subs]
+            [unisporter.views :as views]
+            [unisporter.config :as config]))
 
 (defn dev-setup []
   (when config/debug?
