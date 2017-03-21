@@ -79,7 +79,7 @@
               [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]]
     :env {:dev? "true"}}
 
-   :uberjar {:prep-tasks     [["clean"] ["less" "once"] ["cljsbuild" "once" "unisporter-min"]]
+   :uberjar {:prep-tasks     ["clean" "compile" ["less" "once"] ["cljsbuild" "once" "unisporter-min"]]
              :env            {:production "true"}
              :aot            :all
              :omit-source    true
@@ -119,7 +119,7 @@
 
   :main unisporter.server
 
-  :aot [manifold.deferred]
+  :aot []
 
   :uberjar-name "unisporter.jar"
 

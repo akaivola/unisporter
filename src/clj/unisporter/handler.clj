@@ -1,10 +1,9 @@
 (ns unisporter.handler
-  (:import
-   [manifold.deferred Deferred])
   (:require
     [unisporter.middleware.basic-auth :as auth-middleware]
     [unisporter.sports :as sports]
     [cheshire.generate :refer [add-encoder]]
+    [manifold.deferred]
     [compojure.api.exception :as ex]
     [compojure.api.sweet :as api]
     [compojure.response :refer [Renderable]]
@@ -29,7 +28,7 @@
 ;; through unchanged so that the thread won't be blocked.
 ;; (this allows you to return deferreds)
 (extend-protocol Renderable
-  Deferred
+  manifold.deferred.Deferred
   (render [d _] d))
 
 (defn- render [file & [context-map]]
