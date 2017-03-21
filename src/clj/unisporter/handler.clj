@@ -16,6 +16,7 @@
     [selmer.parser :as selmer]
     [taoensso.timbre :refer [spy debug warn]]))
 
+
 ;; Added because when using compojure.api's :return it will for some reason
 ;; change the output to a BufferedInputStream
 (add-encoder java.io.BufferedInputStream
@@ -41,7 +42,7 @@
    (api/GET "/" [] (render "index.html"))))
 
 (api/defroutes api-routes
-  (api/context "/api"
+  (api/context "/api" []
     (api/GET "/" []
       (sports/spinnings))))
 
