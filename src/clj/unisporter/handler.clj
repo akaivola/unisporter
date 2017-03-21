@@ -3,6 +3,7 @@
    [manifold.deferred Deferred])
   (:require
     [unisporter.middleware.basic-auth :as auth-middleware]
+    [unisporter.sports :as sports]
     [cheshire.generate :refer [add-encoder]]
     [compojure.api.exception :as ex]
     [compojure.api.sweet :as api]
@@ -40,7 +41,9 @@
    (api/GET "/" [] (render "index.html"))))
 
 (api/defroutes api-routes
-  )
+  (api/context "/api"
+    (api/GET "/" []
+      (sports/spinnings))))
 
 (defn custom-handler [^Exception e data request]
   (cond

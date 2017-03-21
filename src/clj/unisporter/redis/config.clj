@@ -4,7 +4,8 @@
 
 (def conn
   {:spec {:uri (or (:redis-url env)
-                   (:redistogo-url env))}
+                 (:redistogo-url env)
+                 "http://localhost:6379/")}
    :pool {}})
 
 (defmacro wcar* [& body] `(car/wcar conn ~@body))
