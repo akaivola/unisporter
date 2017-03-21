@@ -9,8 +9,10 @@
 (def meilahti? #(= (:venue %) "Meilahden liikuntakeskus"))
 (defn spinning? [item] (= (first (:rooms item)) "Sisäpyöräilysali"))
 
-(defn full? [{:keys [totalReservations maxAttendees]}]
-  (= totalReservations maxAttendees))
+(defn full? [{:keys [reservations maxReservations]}]
+  (and
+    (pos? maxReservations)
+    (= reservations maxReservations)))
 
 (def sport-details-endpoint "https://unisport.fi/yol/web/fi/crud/read/reservable.json"
   ;?id=203182708&details=true
