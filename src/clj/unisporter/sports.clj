@@ -35,8 +35,8 @@
                          {:date             date
                           :past             "false"
                           :sportHierarchies "825079,6247560"}})
-                     :body
-                   :items)))
+                      :body
+                      :items)))
              weekrange))
          deref
          flatten
