@@ -1,1 +1,0 @@
-{"version":3,"file":"\/Users\/akaivola\/Development\/lt-kettu\/iamfoxy\/resources\/public\/js\/compiled\/app-out\/iamfoxy\/events.js","sources":["events.cljs?rel=1489150130274"],"lineCount":10,"mappings":";AAAA;;;;AAIA,qCAAA,rCAACA,2GAEA,WAAMC,EAAEA;AAAR,AACEC","names":["re-frame.core\/reg-event-db","_","iamfoxy.db\/default-db"]}
