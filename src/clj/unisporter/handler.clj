@@ -43,7 +43,7 @@
 
 (api/defroutes api-routes
   (api/context "/api" []
-    (api/GET "/" []
+    (api/GET "/spinning" []
       (sports/spinnings))))
 
 (defn custom-handler [^Exception e data request]
