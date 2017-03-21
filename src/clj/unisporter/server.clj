@@ -3,7 +3,6 @@
    [aleph.http :as http]
    [unisporter.handler :refer [handler]]
    [cider.nrepl :refer [cider-nrepl-handler]]
-   [clojure.core.async :as a]
    [clojure.tools.nrepl.server :as nrepl]
    [environ.core :refer [env]]
    [ring.middleware.reload :refer [wrap-reload]]
@@ -26,8 +25,7 @@
   (let [handler (cond-> handler
                     (:dev? env) (wrap-reload))
         server_ (reset! server (http/start-server handler {:port port}))]
-    (do
-      (a/go (start-repl! repl-port)))
+    (future (start-repl! repl-port))
     (info (str "Started server on port " port))
     server_))
 
@@ -35,6 +33,6 @@
   (.close @server))
 
 (defn -main [& args]
-  (let [port (Integer/parseInt (or (env :port) "4000"))]
+  (let [port (Integer/parseInt (or (:port env) "4000"))]
     (start :port port)
     @(promise)))
