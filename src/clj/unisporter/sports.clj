@@ -46,4 +46,4 @@
              (filter spinning?)
              (filter (complement #(not= (:cancelled %))))
              (filter full?)))
-         vec)))
+         (vec))))
