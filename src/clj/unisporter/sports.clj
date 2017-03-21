@@ -45,4 +45,5 @@
              (filter meilahti?)
              (filter spinning?)
              (filter (complement #(not= (:cancelled %))))
-             (filter full?))))))
+             (filter full?)))
+         vec)))
