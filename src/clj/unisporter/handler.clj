@@ -1,18 +1,20 @@
 (ns unisporter.handler
   (:require
-    [unisporter.middleware.basic-auth :as auth-middleware]
-    [unisporter.sports :as sports]
     [cheshire.generate :refer [add-encoder]]
-    [manifold.deferred]
     [compojure.api.exception :as ex]
     [compojure.api.sweet :as api]
     [compojure.response :refer [Renderable]]
     [compojure.route :as route]
     [environ.core :refer [env]]
+    [manifold.deferred]
     [ring.middleware.session :as ring-session]
+    [ring.middleware.session :as session]
     [ring.util.http-response :refer [ok found internal-server-error not-found bad-request content-type set-cookie unauthorized forbidden]]
     [schema.core :as s]
     [selmer.parser :as selmer]
+    [unisporter.middleware.basic-auth :as auth-middleware]
+    [unisporter.session :as uni-session]
+    [unisporter.sports :as sports]
     [taoensso.timbre :refer [spy debug warn]]))
 
 
@@ -43,7 +45,47 @@
 (api/defroutes api-routes
   (api/context "/api" []
     (api/GET "/spinning" []
-      (ok (sports/spinnings)))))
+      (ok
+        (when (:dev? env)
+          [{:rooms                  ["Sisäpyöräilysali"],
+            :reservationPeriod      {:start "2017-03-18T08:00", :end "2017-03-25T11:15"},
+            :totalReservations      37,
+            :venueId                57178,
+            :reservationRequirement "MEMBERSHIP",
+            :startTime              "2017-03-25T12:15",
+            :name                   "Spin Intervalli",
+            :endTime                "2017-03-25T13:15",
+            :maxAttendees           37,
+            :sportPlaceId           106901,
+            :cancelled              false,
+            :activity               "Spin Intervalli",
+            :id                     203183288,
+            :instructors            [{:id 32385, :lastName "Lindström", :firstName "Emilia"}],
+            :venue                  "Meilahden liikuntakeskus",
+            :maxReservations        37,
+            :campus                 25060,
+            :reservations           37,
+            :activityId             826530}
+           {:rooms                  ["Sisäpyöräilysali"],
+            :reservationPeriod      {:start "2017-03-19T08:00", :end "2017-03-26T10:00"},
+            :totalReservations      37,
+            :venueId                57178,
+            :reservationRequirement "MEMBERSHIP",
+            :startTime              "2017-03-26T11:00",
+            :name                   "Spin Tasasyke 75",
+            :endTime                "2017-03-26T12:15",
+            :maxAttendees           37,
+            :sportPlaceId           106901,
+            :cancelled              false,
+            :activity               "Spin Tasasyke",
+            :id                     203183378,
+            :instructors            [{:id 47671, :lastName "Avo", :firstName "Taina"}],
+            :venue                  "Meilahden liikuntakeskus",
+            :maxReservations        37,
+            :campus                 25060,
+            :reservations           37,
+            :activityId             826529}]
+          (sports/spinnings))))))
 
 (defn custom-handler [^Exception e data request]
   (cond
@@ -78,7 +120,8 @@
 (def handler
   (api/routes
     (api/middleware
-      [auth-middleware/with-authentication]
+      [auth-middleware/with-authentication
+       (session/wrap-session {:store (uni-session/create-store)})]
       (api/GET "/swagger.json" [] get-swagger-json))
     (route/resources "/")
     api

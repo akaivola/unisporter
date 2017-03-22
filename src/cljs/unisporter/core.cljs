@@ -4,6 +4,7 @@
             [re-frisk.core :refer [enable-re-frisk!]]
             [unisporter.events]
             [unisporter.subs]
+            [unisporter.ajax]
             [unisporter.views :as views]
             [unisporter.config :as config]))
 
@@ -16,7 +17,7 @@
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/main-panel]
-                  (.getElementById js/document "app")))
+    (.getElementById js/document "app")))
 
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])

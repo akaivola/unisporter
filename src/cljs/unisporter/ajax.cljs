@@ -7,8 +7,6 @@
    [unisporter.config :as config]
    [taoensso.timbre :refer-macros [spy debug]]))
 
-(def token (atom nil))
-
 (r/reg-fx
   :http
   (fn [{:keys [url method json-params form-params handler error-handler]
@@ -20,8 +18,7 @@
             request (f
                       url
                       (merge
-                        {:with-credentials? false
-                         :oauth-token @token}
+                        {:with-credentials? false}
                         (or (when json-params
                               {:json-params json-params})
                             (when form-params

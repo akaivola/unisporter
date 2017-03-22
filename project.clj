@@ -8,6 +8,7 @@
                  [re-frisk "0.3.2"]
                  [venantius/accountant "0.1.7"]
                  [cljs-http "0.1.42"]
+                 [com.andrewmcveigh/cljs-time "0.5.0-alpha2"]
 
                  ; Clojure/ClojureScript
                  [com.taoensso/timbre "4.8.0"]

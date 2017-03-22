@@ -1,8 +1,10 @@
 (ns unisporter.subs
     (:require-macros [reagent.ratom :refer [reaction]])
-    (:require [re-frame.core :as re-frame]))
+    (:require [re-frame.core :as r]))
 
-(re-frame/reg-sub
- :name
- (fn [db]
-   (:name db)))
+(r/reg-sub
+  :spinnings
+  (fn [db]
+    (:spinnings db)))
+
+
