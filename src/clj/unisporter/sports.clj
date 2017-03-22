@@ -18,34 +18,32 @@
   ;?id=203182708&details=true
   )
 
+(defn activities [date]
+  (->> (http/get "https://unisport.fi/yol/web/fi/crud/read/event.json"
+         {:query-params
+          {:date             date
+           :past             false
+           :sportHierarchies "825079,6247560"}})
+       :body
+       :items))
+
 (defn spinnings [& {:keys [campus sport] :or
                     {campus :m
-                     sport :ryhmaliikunta}}]
+                     sport  :ryhmaliikunta}}]
   (let [now (t/now)
         weekrange (map
                     #(->> (t/days %)
                           (t/plus now)
-                          (c/to-local-date)
+                          c/to-local-date
                           (.toString))
                     (range 1 8))]
-    (->> (apply d/zip
-           (map
-             (fn [date]
-               (d/future
-                 (->> (http/get "https://unisport.fi/yol/web/fi/crud/read/event.json"
-                        {:query-params
-                         {:date             date
-                          :past             "false"
-                          :sportHierarchies "825079,6247560"}})
-                      :body
-                      :items)))
-             weekrange))
+    (->> (apply d/zip (map (fn [date] (d/future (activities date))) weekrange))
          deref
          flatten
          (eduction
            (comp
              (filter meilahti?)
              (filter spinning?)
-             (filter (complement #(not= (:cancelled %))))
+             (filter #(not (:cancelled %)))
              (filter full?)))
-         (vec))))
+         vec)))
