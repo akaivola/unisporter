@@ -56,7 +56,8 @@
 
   :auto-clean false
 
-  :figwheel {:css-dirs ["resources/public/css"]}
+  :figwheel {:css-dirs ["resources/public/css"]
+             :server-port 3450}
 
   :less {:source-paths ["resources/less"]
          :target-path  "resources/public/css/compiled"}
