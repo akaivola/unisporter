@@ -120,8 +120,7 @@
 (def handler
   (api/routes
     (api/middleware
-      [auth-middleware/with-authentication
-       (session/wrap-session {:store (uni-session/create-store)})]
+      [auth-middleware/with-authentication]
       (api/GET "/swagger.json" [] get-swagger-json))
     (route/resources "/")
     api
