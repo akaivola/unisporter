@@ -46,7 +46,7 @@
   (api/context "/api" []
     (api/GET "/spinning" []
       (ok
-        (when (:dev? env)
+        (if (:dev? env)
           [{:rooms                  ["Sisäpyöräilysali"],
             :reservationPeriod      {:start "2017-03-18T08:00", :end "2017-03-25T11:15"},
             :totalReservations      37,
