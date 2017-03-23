@@ -1,11 +1,13 @@
 (ns unisporter.server
   (:require
    [aleph.http :as http]
-   [unisporter.handler :refer [handler]]
    [cider.nrepl :refer [cider-nrepl-handler]]
+   [clojure.core.async :as a]
    [clojure.tools.nrepl.server :as nrepl]
    [environ.core :refer [env]]
    [ring.middleware.reload :refer [wrap-reload]]
+   [unisporter.handler :refer [handler]]
+   [unisporter.redis.worker :as worker]
    [taoensso.timbre :refer [info]])
   (:gen-class))
 
@@ -32,7 +34,18 @@
 (defn stop []
   (.close @server))
 
+(defn start-workers []
+  (worker/register-workers)
+  (a/go-loop []
+    (a/<! (a/timeout (* 1000 60)))
+    (recur)))
+
 (defn -main [& args]
-  (let [port (Integer/parseInt (or (:port env) "4000"))]
-    (start :port port)
-    @(promise)))
+  (if (= "worker" (first args))
+    (do
+      (info "Starting workers")
+      (start-workers))
+    (let [port (Integer/parseInt (or (:port env) "4000"))]
+      (start :port port)))
+
+  @(promise))

@@ -6,8 +6,7 @@
 
 (defn- check-authentication [request {:keys [username password]}]
   (cond
-    (and (= username (or (:swagger-username env) "apibrowser"))
-         (= password (or (:swagger-password env) "ApinSelaaja"))) true
+    (= username (or (:username env) "x")) true
     :else nil))
 
 (def backend (http-basic-backend {:realm  "unisporter"

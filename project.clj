@@ -30,7 +30,10 @@
                  [selmer "1.10.5"] ; template parser
                  [clj-http "2.3.0"] ; http client
                  [com.taoensso/carmine "2.15.1"] ; redis
-                 [com.cemerick/url "0.1.1"] ]
+                 [com.cemerick/url "0.1.1"]
+                 [clj-redis-session "2.1.0" :exclusions [com.taoensso/carmine
+                                                         org.clojure/clojure
+                                                         ring/ring-core]]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
             [lein-figwheel "0.5.8"]

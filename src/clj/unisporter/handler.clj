@@ -8,7 +8,9 @@
     [environ.core :refer [env]]
     [manifold.deferred]
     [ring.middleware.session :as ring-session]
-    [ring.middleware.session :as session]
+    [clj-redis-session.core :refer [redis-store]]
+    [unisporter.redis.config :as r]
+    [unisporter.session :as session]
     [ring.util.http-response :refer [ok found internal-server-error not-found bad-request content-type set-cookie unauthorized forbidden]]
     [schema.core :as s]
     [selmer.parser :as selmer]
@@ -16,7 +18,6 @@
     [unisporter.session :as uni-session]
     [unisporter.sports :as sports]
     [taoensso.timbre :refer [spy debug warn]]))
-
 
 ;; Added because when using compojure.api's :return it will for some reason
 ;; change the output to a BufferedInputStream
@@ -40,7 +41,9 @@
 
 (api/defroutes app-routes
   (api/undocumented
-    (api/GET "/" [] (render "index.html"))))
+    (api/GET "/" []
+      (assoc (render "index.html")
+             :session {}))))
 
 (api/defroutes api-routes
   (api/context "/api" []
@@ -106,10 +109,8 @@
                            (ex/with-logging custom-handler :error)}}}
   (api/context "/" []
     (api/GET "/ping" [] (str "PONG " (:git-hash env)))
-    (api/middleware
-      []
-      app-routes
-      api-routes)))
+    app-routes
+    api-routes))
 
 (defn get-swagger-json
   [req]
@@ -117,11 +118,20 @@
     (buddy.auth/throw-unauthorized)
     (ring.swagger.middleware/get-swagger-data req)))
 
-(def handler
-  (api/routes
-    (api/middleware
-      [auth-middleware/with-authentication]
-      (api/GET "/swagger.json" [] get-swagger-json))
+(api/defroutes handler
+  (api/middleware
+    [auth-middleware/with-authentication
+     (fn [handler]
+       (ring-session/wrap-session
+         handler
+         {:store (redis-store r/conn)
+          :root  "/"}))
+     (fn [handler]
+       (fn [req]
+         (if-not (buddy.auth/authenticated? req)
+           (buddy.auth/throw-unauthorized)
+           (handler req))))]
+    (api/GET "/swagger.json" [] get-swagger-json)
     (route/resources "/")
     api
     (route/not-found "<h1>Page not found</h1>")))
