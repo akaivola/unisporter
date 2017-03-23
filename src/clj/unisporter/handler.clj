@@ -120,8 +120,9 @@
     (ring.swagger.middleware/get-swagger-data req)))
 
 (api/defapi messenger
-  (api/GET "/messenger/callback" []
-    (ok))
+  (api/GET "/messenger/callback" request
+    (debug " " request)
+    (ok (-> request :query-params (get "hub.challenge"))))
   (api/POST "/messenger/callback" []
     :body [postback {s/Any s/Any}]
     (debug postback)
