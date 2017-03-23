@@ -134,4 +134,8 @@
     (api/GET "/swagger.json" [] get-swagger-json)
     (route/resources "/")
     api
-    (route/not-found "<h1>Page not found</h1>")))
+    (route/not-found "<h1>Page not found</h1>"))
+  (api/POST "/messenger/callback" []
+    {:body [postback {s/Any s/Any}]}
+    (debug postback)
+    (ok)))
