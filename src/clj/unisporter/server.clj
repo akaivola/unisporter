@@ -37,7 +37,13 @@
 (defn start-workers []
   (worker/register-workers)
   (a/go-loop []
-    (a/<! (a/timeout (* 1000 60)))
+    (a/<! (a/timeout (* 1000
+                        (or
+                          (:poll-interval-seconds env)
+                          (when (:dev? env)
+                            10)
+                          120))))
+    (worker/trigger-check-activities)
     (recur)))
 
 (defn -main [& args]

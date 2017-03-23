@@ -10,7 +10,11 @@
     r/conn "check-activities"
     {:handler (fn [{:keys [message attempt]}]
                 (info "tick")
-                {:status :success})}))
+
+                {:status :success})
+     :throttle-ms 1000
+     :lock-ms 60000
+     :nthreads 1}))
 
 (defn trigger-check-activities []
   (r/wcar* (car-mq/enqueue "check-activities" :message)))
