@@ -110,7 +110,8 @@
   (api/context "/" []
     (api/GET "/ping" [] (str "PONG " (:git-hash env)))
     app-routes
-    api-routes))
+    api-routes
+    ))
 
 (defn get-swagger-json
   [req]
@@ -118,11 +119,14 @@
     (buddy.auth/throw-unauthorized)
     (ring.swagger.middleware/get-swagger-data req)))
 
-(api/defroutes handler
+(api/defapi messenger
   (api/POST "/messenger/callback" []
     :body [postback {s/Any s/Any}]
     (debug postback)
-    (ok))
+    (ok)))
+
+(api/defroutes handler
+  messenger
   (api/middleware
     [auth-middleware/with-authentication
      (fn [handler]
