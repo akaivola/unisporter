@@ -110,8 +110,7 @@
                            (ex/with-logging custom-handler :error)}}}
   (api/context "/" []
     app-routes
-    api-routes
-    ))
+    api-routes))
 
 (defn get-swagger-json
   [req]

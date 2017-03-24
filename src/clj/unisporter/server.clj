@@ -1,6 +1,7 @@
 (ns unisporter.server
   (:require
-   [aleph.http :as http]
+   [aleph.http :as aleph]
+   [unisporter.util.http :as http]
    [cider.nrepl :refer [cider-nrepl-handler]]
    [clojure.core.async :as a]
    [clojure.tools.nrepl.server :as nrepl]
@@ -26,7 +27,7 @@
                                             repl-port 4001}}]
   (let [handler (cond-> handler
                     (:dev? env) (wrap-reload))
-        server_ (reset! server (http/start-server handler {:port port}))]
+        server_ (reset! server (aleph/start-server handler {:port port}))]
     (future (start-repl! repl-port))
     (info (str "Started server on port " port))
     server_))
@@ -44,6 +45,11 @@
                             10)
                           120))))
     (worker/trigger-check-activities)
+    (future
+      (http/get (if (:dev? env)
+                  "http://localhost:4000/ping"
+                  "https://unisporter.herokuapp.com/ping")
+                {:throw-exceptions false}))
     (recur)))
 
 (defn -main [& args]
