@@ -1,7 +1,6 @@
 (ns unisporter.views
   (:require
    [re-frame.core :as r]
-   [cljs-time.format :as f]
    [taoensso.timbre :refer-macros [spy debug]]))
 
 (defn spinnings []

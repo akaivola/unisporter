@@ -2,13 +2,12 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
 
                  ; Clojurescript
-                 [org.clojure/clojurescript "1.9.495"]
+                 [org.clojure/clojurescript "1.9.293"]
                  [reagent "0.6.1"]
                  [re-frame "0.9.2"]
                  [re-frisk "0.4.4"]
                  [venantius/accountant "0.1.9"]
                  [cljs-http "0.1.42"]
-                 [com.andrewmcveigh/cljs-time "0.5.0-alpha2"]
 
                  ; Clojure/ClojureScript
                  [com.taoensso/timbre "4.8.0"]
@@ -110,8 +109,10 @@
      :compiler     {:main            unisporter.core
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/app-min-out"
-                    :parallel-build  true
                     :optimizations   :advanced
+                    :parallel-build  true
+                    :language-out    :ecmascript5
+                    :language-in     :ecmascript5
                     :closure-defines {goog.DEBUG false}
                     :pretty-print    false}}
 
