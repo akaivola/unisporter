@@ -4,6 +4,7 @@
     [compojure.api.core :as core]
     [compojure.api.exception :as ex]
     [compojure.api.sweet :as api]
+    [clojure.core.match :refer [match]]
     [compojure.response :refer [Renderable]]
     [compojure.route :as route]
     [environ.core :refer [env]]
@@ -81,9 +82,12 @@
 
 (defn route-postback [postback]
   (match postback
-         {:postback {:payload ({:reserve activity-id} :<< read-str)}
-          :object   "page"
-          :entry    [{:messaging [{:sender {:id uid}}]}]}
+         {:object   "page"
+          :entry    [{:messaging [{:sender {:id uid}
+                                   :postback {:payload ({:reserve id} :<< read-string)}}]}]}
+         (debug :BOOYEAH uid id)
+
+
          :else nil))
 
 (api/defapi messenger
