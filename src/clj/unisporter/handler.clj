@@ -119,6 +119,9 @@
     (buddy.auth/throw-unauthorized)
     (ring.swagger.middleware/get-swagger-data req)))
 
+(api/defroutes tos
+  (render "tos.html"))
+
 (api/defapi messenger
   (api/context "/messenger" request
     (api/GET "/callback" {query-params :query-params}
@@ -127,10 +130,12 @@
             (get query-params "hub.challenge"))))
     (api/POST "/callback" []
       :body [postback {s/Any s/Any}]
+      :header-params [x-hub-signature :- (s/maybe s/Str)]
       (debug postback)
       (ok))))
 
 (api/defroutes handler
+  tos
   messenger
   (api/middleware
     [auth-middleware/with-authentication
