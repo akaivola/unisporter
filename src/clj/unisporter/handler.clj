@@ -109,7 +109,6 @@
                            ::ex/default
                            (ex/with-logging custom-handler :error)}}}
   (api/context "/" []
-    (api/GET "/ping" [] (str "PONG " (:git-hash env)))
     app-routes
     api-routes
     ))
@@ -141,6 +140,7 @@
 (api/defroutes handler
   tos
   messenger
+  (api/GET "/ping" [] (str "PONG"))
   (core/route-middleware
     [auth-middleware/with-authentication
      (fn [handler]

@@ -110,7 +110,7 @@
                     :output-to       "resources/public/js/compiled/app.js"
                     :output-dir      "resources/public/js/compiled/app-min-out"
                     :optimizations   :advanced
-                    :parallel-build  true
+                    :parallel-build  false
                     :language-out    :ecmascript5
                     :language-in     :ecmascript5
                     :closure-defines {goog.DEBUG false}

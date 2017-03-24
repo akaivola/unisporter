@@ -6,8 +6,8 @@
    [taoensso.timbre :refer [info]]))
 
 (defn register-workers []
-  (car-mq/worker
-    r/conn "check-activities"
+  (car-mq/worker r/conn
+    "check-activities"
     {:handler (fn [{:keys [message attempt]}]
                 (info "tick")
 
