@@ -1,6 +1,7 @@
 (ns unisporter.handler
   (:require
     [cheshire.generate :refer [add-encoder]]
+    [compojure.api.core :as core]
     [compojure.api.exception :as ex]
     [compojure.api.sweet :as api]
     [compojure.response :refer [Renderable]]
@@ -137,7 +138,7 @@
 (api/defroutes handler
   tos
   messenger
-  (api/middleware
+  (core/route-middleware
     [auth-middleware/with-authentication
      (fn [handler]
        (ring-session/wrap-session
