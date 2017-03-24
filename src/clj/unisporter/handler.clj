@@ -121,7 +121,8 @@
     (ring.swagger.middleware/get-swagger-data req)))
 
 (api/defroutes tos
-  (render "tos.html"))
+  (api/GET "/tos" []
+    (render "tos.html")))
 
 (api/defapi messenger
   (api/context "/messenger" request
