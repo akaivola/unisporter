@@ -2,33 +2,33 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
 
                  ; Clojurescript
-                 [org.clojure/clojurescript "1.9.293"]
-                 [reagent "0.6.0"]
-                 [re-frame "0.9.1"]
-                 [re-frisk "0.3.2"]
-                 [venantius/accountant "0.1.7"]
+                 [org.clojure/clojurescript "1.9.495"]
+                 [reagent "0.6.1"]
+                 [re-frame "0.9.2"]
+                 [re-frisk "0.4.4"]
+                 [venantius/accountant "0.1.9"]
                  [cljs-http "0.1.42"]
                  [com.andrewmcveigh/cljs-time "0.5.0-alpha2"]
 
                  ; Clojure/ClojureScript
                  [com.taoensso/timbre "4.8.0"]
-                 [org.clojure/core.async "0.2.395"]
+                 [org.clojure/core.async "0.3.442"]
                  [org.clojure/core.match "0.3.0-alpha4"]
 
                  ; Clojure
-                 [aleph "0.4.2-alpha12"]
+                 [aleph "0.4.3"]
                  [buddy/buddy-auth "1.4.0"]
                  [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
                  [compojure "1.5.2"]
                  [environ "1.1.0"]
-                 [metosin/compojure-api "1.1.10"]
+                 [metosin/compojure-api "1.2.0-alpha4"]
                  [metosin/ring-http-response "0.8.1"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/tools.nrepl "0.2.12"]
                  [ring "1.5.1"]
                  [ring/ring-defaults "0.2.2"]
                  [selmer "1.10.5"] ; template parser
-                 [clj-http "2.3.0"] ; http client
+                 [clj-http "3.4.1"] ; http client
                  [com.taoensso/carmine "2.15.1"] ; redis
                  [com.cemerick/url "0.1.1"]
                  [clj-redis-session "2.1.0" :exclusions [com.taoensso/carmine
@@ -74,9 +74,9 @@
     :injections [(require 'pjstadig.humane-test-output)
                  (pjstadig.humane-test-output/activate!)]}
    :dev
-   {:dependencies [[figwheel-sidecar "0.5.8"]
+   {:dependencies [[figwheel-sidecar "0.5.9"]
                    [com.cemerick/piggieback "0.2.1"]
-                   [refactor-nrepl "2.2.0"]
+                   [refactor-nrepl "2.3.0"]
                    [snipsnap "0.2.0" :exclusions [org.clojure/clojure]]]
     :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
     :plugins [[lein-figwheel "0.5.8"]
