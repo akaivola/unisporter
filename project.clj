@@ -36,7 +36,7 @@
                                                          ring/ring-core]]]
 
   :plugins [[lein-cljsbuild "1.1.5"]
-            [lein-figwheel "0.5.8"]
+            [lein-figwheel "0.5.9"]
             [lein-less "1.7.5"]
             [lein-ancient "0.6.10"]
             [lein-environ "1.1.0"]
@@ -79,7 +79,7 @@
                    [refactor-nrepl "2.3.0"]
                    [snipsnap "0.2.0" :exclusions [org.clojure/clojure]]]
     :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
-    :plugins [[lein-figwheel "0.5.8"]
+    :plugins [[lein-figwheel "0.5.9"]
               [lein-doo "0.1.7"]
               [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]]
     :env {:dev? "true"}}
