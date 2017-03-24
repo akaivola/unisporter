@@ -8,10 +8,9 @@
     [compojure.route :as route]
     [environ.core :refer [env]]
     [manifold.deferred]
-    [ring.middleware.session :as ring-session]
-    [clj-redis-session.core :refer [redis-store]]
     [unisporter.redis.config :as r]
     [unisporter.session :as session]
+    [unisporter.messaging :as messaging]
     [ring.util.http-response :refer [ok found internal-server-error not-found bad-request content-type set-cookie unauthorized forbidden]]
     [schema.core :as s]
     [selmer.parser :as selmer]
@@ -40,77 +39,12 @@
       (ok)
       (content-type "text/html")))
 
-(api/defroutes app-routes
-  (api/undocumented
-    (api/GET "/" []
-      (assoc (render "index.html")
-             :session {}))))
-
 (api/defroutes api-routes
   (api/context "/api" []
     (api/GET "/spinning" []
       (ok
         (if (:dev? env)
-          [{:rooms                  ["Sisäpyöräilysali"],
-            :reservationPeriod
-            {:start "lauantai 18.03. klo 08:00", :end "lauantai 25.03. klo 11:15"},
-            :totalReservations      37,
-            :venueId                57178,
-            :reservationRequirement "MEMBERSHIP",
-            :startTime              "lauantai 25.03. klo 12:15",
-            :name                   "Spin Intervalli",
-            :endTime                "lauantai 25.03. klo 13:15",
-            :maxAttendees           37,
-            :sportPlaceId           106901,
-            :cancelled              false,
-            :activity               "Spin Intervalli",
-            :id                     203183288,
-            :instructors            [{:id 32385, :lastName "Lindström", :firstName "Emilia"}],
-            :venue                  "Meilahden liikuntakeskus",
-            :maxReservations        37,
-            :campus                 25060,
-            :reservations           37,
-            :activityId             826530}
-           {:rooms                  ["Sisäpyöräilysali"],
-            :reservationPeriod
-            {:start "sunnuntai 19.03. klo 08:00", :end "sunnuntai 26.03. klo 10:00"},
-            :totalReservations      37,
-            :venueId                57178,
-            :reservationRequirement "MEMBERSHIP",
-            :startTime              "sunnuntai 26.03. klo 11:00",
-            :name                   "Spin Tasasyke 75",
-            :endTime                "sunnuntai 26.03. klo 12:15",
-            :maxAttendees           37,
-            :sportPlaceId           106901,
-            :cancelled              false,
-            :activity               "Spin Tasasyke",
-            :id                     203183378,
-            :instructors            [{:id 47671, :lastName "Avo", :firstName "Taina"}],
-            :venue                  "Meilahden liikuntakeskus",
-            :maxReservations        37,
-            :campus                 25060,
-            :reservations           37,
-            :activityId             826529}
-           {:rooms                  ["Sisäpyöräilysali"],
-            :reservationPeriod
-            {:start "perjantai 24.03. klo 08:00", :end "perjantai 31.03. klo 15:40"},
-            :totalReservations      37,
-            :venueId                57178,
-            :reservationRequirement "FULL_DAY_MEMBERSHIP",
-            :startTime              "perjantai 31.03. klo 16:40",
-            :name                   "Spin Tasasyke 75",
-            :endTime                "perjantai 31.03. klo 17:55",
-            :maxAttendees           37,
-            :sportPlaceId           106901,
-            :cancelled              false,
-            :activity               "Spin Tasasyke",
-            :id                     203183203,
-            :instructors            [{:id 5307211, :lastName "Impiö", :firstName "Eeva"}],
-            :venue                  "Meilahden liikuntakeskus",
-            :maxReservations        37,
-            :campus                 25060,
-            :reservations           37,
-            :activityId             826529}]
+          messaging/fixture
           (sports/spinnings))))))
 
 (defn custom-handler [^Exception e data request]
@@ -131,7 +65,6 @@
                            ::ex/default
                            (ex/with-logging custom-handler :error)}}}
   (api/context "/" []
-    app-routes
     api-routes))
 
 (defn get-swagger-json
@@ -146,6 +79,13 @@
   (api/GET "/ppp" []
     (render "pp.html")))
 
+(defn route-postback [postback]
+  (match postback
+         {:postback {:payload ({:reserve activity-id} :<< read-str)}
+          :object   "page"
+          :entry    [{:messaging [{:sender {:id uid}}]}]}
+         :else nil))
+
 (api/defapi messenger
   (api/context "/messenger" request
     (api/GET "/callback" {query-params :query-params}
@@ -155,6 +95,8 @@
     (api/POST "/callback" []
       :body [postback {s/Any s/Any}]
       :header-params [x-hub-signature :- (s/maybe s/Str)]
+
+      (route-postback postback)
       (debug postback)
       (ok))))
 
@@ -164,11 +106,6 @@
   (api/GET "/ping" [] (str "PONG"))
   (core/route-middleware
     [auth-middleware/with-authentication
-     (fn [handler]
-       (ring-session/wrap-session
-         handler
-         {:store (redis-store r/conn)
-          :root  "/"}))
      (fn [handler]
        (fn [req]
          (if-not (buddy.auth/authenticated? req)
