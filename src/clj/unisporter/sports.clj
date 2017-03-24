@@ -3,6 +3,7 @@
    [unisporter.util.http :as http]
    [clj-time.coerce :as c]
    [clj-time.core :as t]
+   [clj-time.format :as f]
    [manifold.deferred :as d]
    [taoensso.timbre :refer [spy debug]]))
 
@@ -19,6 +20,22 @@
 (def sport-details-endpoint "https://unisport.fi/yol/web/fi/crud/read/reservable.json"
   ;?id=203182708&details=true
   )
+
+(def formatter
+  (f/formatter "EEEE d.MM. 'klo' HH:mm"
+               (org.joda.time.DateTimeZone/forID "Europe/Helsinki")))
+
+(defn- datestr->humantime [t]
+  (->> t
+       c/from-string
+       (f/unparse formatter)))
+
+(defn times [item]
+  (-> item
+      (update-in [:reservationPeriod :start] datestr->humantime)
+      (update-in [:reservationPeriod :end] datestr->humantime)
+      (update :startTime datestr->humantime)
+      (update :endTime datestr->humantime)))
 
 (defn activities [date]
   (->> (http/get "https://unisport.fi/yol/web/fi/crud/read/event.json"
@@ -47,5 +64,6 @@
              (filter meilahti?)
              (filter spinning?)
              (filter #(not (:cancelled %)))
-             (filter full?)))
+             (filter full?)
+             (map times)))
          vec)))
