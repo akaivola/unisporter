@@ -123,7 +123,7 @@
 (api/defroutes tos
   (api/GET "/tos" []
     (render "tos.html"))
-  (api/GET "/pp" []
+  (api/GET "/ppp" []
     (render "pp.html")))
 
 (api/defapi messenger
