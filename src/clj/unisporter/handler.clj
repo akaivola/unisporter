@@ -120,13 +120,15 @@
     (ring.swagger.middleware/get-swagger-data req)))
 
 (api/defapi messenger
-  (api/GET "/messenger/callback" request
-    (debug " " request)
-    (ok (-> request :query-params (get "hub.challenge"))))
-  (api/POST "/messenger/callback" []
-    :body [postback {s/Any s/Any}]
-    (debug postback)
-    (ok)))
+  (api/context "/messenger" request
+    (api/GET "/callback" {query-params :query-params}
+      (ok (when (= (get query-params "hub.verify_token")
+                   (:verify-token env))
+            (get query-params "hub.challenge"))))
+    (api/POST "/callback" []
+      :body [postback {s/Any s/Any}]
+      (debug postback)
+      (ok))))
 
 (api/defroutes handler
   messenger
