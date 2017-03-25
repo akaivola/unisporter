@@ -20,7 +20,7 @@
                   (do
                     (debug (:name activity) "/" (:id activity) " - " (:reservations activity) "/" (:maxReservations activity))
                     (when-not (sports/full? activity)
-                      (mapv #(car/wcar r/conn (spy (car-mq/enqueue "notify-availability" [% activity]))) uids))))
+                      (mapv #(car/wcar r/conn (car-mq/enqueue "notify-availability" [% activity])) uids))))
 
                 {:status :success})
      :throttle-ms 1000

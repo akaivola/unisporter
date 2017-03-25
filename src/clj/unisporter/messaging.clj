@@ -156,36 +156,34 @@
 
 (defn send-reservations [uid many-reservations]
   (doseq [reservations (partition 4 4 nil many-reservations)]
-    (spy
-      (http/post
-        url
-        {:form-params
-         {:access_token (:page-access-token env)
-          :recipient    {:id uid}
-          :message
-          {:attachment
-           {:type "template"
-            :payload
-            (spy
-              (merge
-                {:template_type "generic"
-                 :elements
-                 (for [{:keys [id name instructors startTime endTime]} reservations
-                       :let                                            [{:keys [firstName lastName]} (first instructors)]]
-                   {:title    (format "%s, %s %s" name lastName firstName)
-                    :subtitle (format "%s - %s"
-                                      (s/datestr->humantime startTime)
-                                      (s/datestr-short->humantime endTime))
-                    :buttons  [{:title (str "Poista")
-                                :type  "postback"
-                                :payload
-                                (print-str
-                                  {:delete-reservation id})}]})}
-                (when (not= 1 (count reservations))
-                  {:template_type     "list"
-                   :top_element_style "compact"})))}}}
-         :content-type     :json
-         :throw-exceptions false}))))
+    (http/post
+      url
+      {:form-params
+       {:access_token (:page-access-token env)
+        :recipient    {:id uid}
+        :message
+        {:attachment
+         {:type "template"
+          :payload
+          (merge
+            {:template_type "generic"
+             :elements
+             (for [{:keys [id name instructors startTime endTime]} reservations
+                   :let                                            [{:keys [firstName lastName]} (first instructors)]]
+               {:title    (format "%s, %s %s" name lastName firstName)
+                :subtitle (format "%s - %s"
+                                  (s/datestr->humantime startTime)
+                                  (s/datestr-short->humantime endTime))
+                :buttons  [{:title (str "Poista")
+                            :type  "postback"
+                            :payload
+                            (print-str
+                              {:delete-reservation id})}]})}
+            (when (not= 1 (count reservations))
+              {:template_type     "list"
+               :top_element_style "compact"}))}}}
+       :content-type     :json
+       :throw-exceptions false})))
 
 (defn acknowledge-reservation [uid reservation]
   (http/post
