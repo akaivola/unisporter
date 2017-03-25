@@ -1,4 +1,5 @@
 (ns unisporter.sports
+  (:import [java.util Locale])
   (:require
    [unisporter.util.http :as http]
    [clj-time.coerce :as c]
@@ -22,20 +23,29 @@
   )
 
 (def formatter
-  (f/formatter "EEEE d.MM. 'klo' HH:mm"
-               (org.joda.time.DateTimeZone/forID "Europe/Helsinki")))
+  (-> (f/formatter "EEEE d.MM. 'klo' HH:mm")
+      (f/with-locale (Locale. "fi" "FI"))))
+
+(def short-formatter
+  (-> (f/formatter "HH:mm")
+      (f/with-locale (Locale. "fi" "FI"))))
 
 (defn- datestr->humantime [t]
   (->> t
        c/from-string
        (f/unparse formatter)))
 
+(defn- datestr-short->humantime [t]
+  (->> t
+      c/from-string
+      (f/unparse short-formatter)))
+
 (defn times [item]
   (-> item
       (update-in [:reservationPeriod :start] datestr->humantime)
       (update-in [:reservationPeriod :end] datestr->humantime)
       (update :startTime datestr->humantime)
-      (update :endTime datestr->humantime)))
+      (update :endTime datestr-short->humantime)))
 
 (defn activities [date]
   (->> (http/get "https://unisport.fi/yol/web/fi/crud/read/event.json"
@@ -67,3 +77,6 @@
              (filter full?)
              (map times)))
          vec)))
+
+(defn reservations [uid]
+  )

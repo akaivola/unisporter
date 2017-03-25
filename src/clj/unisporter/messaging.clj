@@ -70,6 +70,32 @@
 
 (def url (str "https://graph.facebook.com/v2.6/me/messages"))
 
+(def standard-buttons
+  [{:title   "Hae lista uudelleen"
+    :type    "postback"
+    :payload "refresh-spinnings"}
+   {:title   "Varauksesi"
+    :type    "postback"
+    :payload "view-reservations"}])
+
+(defn mark-seen [uid]
+  (http/post url
+             {:form-params {:access_token  (:page-access-token env)
+                            :recipient     {:id uid}
+                            :sender_action "mark_seen"}
+              :throw-exceptions false}))
+
+(defn typing-on [uid]
+  (http/post url
+             {:form-params {:access_token (:page-access-token env)
+                            :recipient     {:id uid}
+                            :sender_action "typing_on"}
+              :throw-exceptions false}))
+
+(defn begin-response [uid]
+  (mark-seen uid)
+  (typing-on uid))
+
 (defn compute-app-access-token []
   (some-> (http/get "https://graph.facebook.com/oauth/access_token"
                     {:query-params     {:client_id     (:app-id env)
@@ -99,25 +125,48 @@
               :content-type     :json
               :throw-exceptions false}))
 
-(defn sendlist [uid items]
-  (http/post url
-             {:form-params      {:access_token (:page-access-token env)
-                                 :recipient    {:id uid}
-                                 :message      {:attachment
-                                                {:type "template"
-                                                 :payload
-                                                 {:template_type "list"
-                                                  :top_element_style "compact"
-                                                  :elements
-                                                  (for [{:keys [id name instructors startTime endTime]} items
-                                                        :let [{:keys [firstName lastName]} (first instructors)]]
-                                                    {:title (format "%s, %s %s" name lastName firstName)
-                                                     :subtitle (format "%s - %s" startTime endTime)
-                                                     :buttons [{:title (str "Varaa " name)
-                                                                :type "postback"
-                                                                :payload
-                                                                (print-str
-                                                                  {:reserve id})}]
-                                                     })}}}}
-              :content-type     :json
-              :throw-exceptions false}))
+(defn send-spinnings [uid items]
+  (http/post
+    url
+    {:form-params
+     {:access_token (:page-access-token env)
+      :recipient    {:id uid}
+      :message
+      {:attachment
+       {:type "template"
+        :payload
+        {:template_type     "list"
+         :top_element_style "compact"
+         :elements
+         (for [{:keys [id name instructors startTime endTime]} items
+               :let   [{:keys [firstName lastName]} (first instructors)]]
+           {:title    (format "%s, %s %s" name lastName firstName)
+            :subtitle (format "%s - %s" startTime endTime)
+            :buttons  [{:title (str "Varaa " name)
+                        :type  "postback"
+                        :payload
+                        (print-str
+                          {:reserve id})}]})
+         :buttons           standard-buttons}}}}
+     :content-type     :json
+     :throw-exceptions false}))
+
+(defn send-reservations [uid reservations]
+  (http/post
+    url
+    {:form-params
+     {:access_token (:page-access-token env)
+      :recipient    {:id uid}
+      :message
+      {:attachment
+       {:type "template"
+        :payload
+        {:template_type     "list"
+         :top_element_style "compact"
+         :elements          []
+         :buttons           standard-buttons}}}}
+     :content-type     :json
+     :throw-exceptions false}))
+
+(defn acknowledge-reservation [uid reservation]
+  )

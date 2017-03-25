@@ -16,6 +16,7 @@
     [schema.core :as s]
     [selmer.parser :as selmer]
     [unisporter.middleware.basic-auth :as auth-middleware]
+    [unisporter.reservation :as reservation]
     [unisporter.session :as uni-session]
     [unisporter.sports :as sports]
     [taoensso.timbre :refer [spy debug warn]]))
@@ -81,14 +82,45 @@
     (render "pp.html")))
 
 (defn route-postback [postback]
-  (match postback
-         {:object   "page"
-          :entry    [{:messaging [{:sender {:id uid}
-                                   :postback {:payload ({:reserve id} :<< read-string)}}]}]}
-         (debug :BOOYEAH uid id)
+  (match (spy postback)
+         {:object "page"
+          :entry  [{:messaging [{:sender   {:id uid}
+                                 :postback {:payload ({:reserve id} :<< read-string)}}]}]}
+         (do
+           (messaging/begin-response uid)
+           (->> (reservation/reserve uid (sports/get-activity id))
+                (messaging/acknowledge-reservation uid)))
 
+         {:object "page"
+          :entry  [{:messaging [{:sender   {:id uid}
+                                 :postback {:payload "refresh-spinnings"}}]}]}
+         (do
+           (messaging/begin-response uid)
+           (debug (messaging/send-spinnings uid (sports/spinnings))))
 
-         :else nil))
+         {:object "page"
+          :entry  [{:messaging [{:sender   {:id uid}
+                                 :postback {:payload "view-reservations"}}]}]}
+         (do
+           (messaging/begin-response uid)
+           (debug (messaging/send-reservations uid (reservation/reservations uid))))
+
+         {:object "page"
+          :entry  [{:messaging [{:sender   {:id uid}
+                                 :postback {:payload ({:delete-reservation id} :<< read-string)}}]}]}
+         (do
+           (messaging/begin-response uid)
+           (let [{:keys [name]} (reservation/delete-reservation uid id)]
+             (debug (messaging/sendmsg uid (str "Varaus poistettu: " name)))))
+
+         {:object "page"
+          :entry  [{:messaging [{:sender {:id uid}}]}]}
+         (do
+           (messaging/begin-response uid)
+           (debug (messaging/send-spinnings uid (sports/spinnings))))
+
+         :else
+         (debug "Unknown postback")))
 
 (api/defapi messenger
   (api/context "/messenger" request
@@ -100,8 +132,7 @@
       :body [postback {s/Any s/Any}]
       :header-params [x-hub-signature :- (s/maybe s/Str)]
 
-      (route-postback postback)
-      (debug postback)
+      (future (route-postback postback))
       (ok))))
 
 (api/defroutes handler
