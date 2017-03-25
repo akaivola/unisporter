@@ -1,6 +1,8 @@
 (ns unisporter.reservation
   (:require
    [unisporter.redis.config :as r]
+   [clj-time.coerce :as c]
+   [clj-time.core :as t]
    [taoensso.carmine :as car]
    [taoensso.timbre :refer [spy debug]]))
 
@@ -14,11 +16,20 @@
 (defn delete-reservation [uid activity-id]
   (car/wcar r/conn (car/del (prefix activity-id uid))))
 
-(defn hour-before-activity-begins [activity]
-  1)
+(defn- parse-hour-before-begins [activity]
+  (-> activity
+      :reservationPeriod
+      :end
+      c/from-string
+      (t/from-time-zone (t/time-zone-for-id "Europe/Helsinki"))))
+
+(defn seconds-from-now [begin]
+  (t/in-seconds (t/interval (t/now)
+                            begin
+                            )))
 
 (defn reserve [uid activity]
   (car/wcar r/conn (car/setex
                      (prefix (:id activity) uid)
-                     (hour-before-activity-begins activity)
+                     (-> activity parse-hour-before-begins seconds-from-now)
                      activity)))
