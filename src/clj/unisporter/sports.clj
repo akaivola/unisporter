@@ -5,6 +5,7 @@
    [clj-time.coerce :as c]
    [clj-time.core :as t]
    [clj-time.format :as f]
+   [manifold.deferred :as d]
    [taoensso.timbre :refer [spy debug]]))
 
 (def meilahti? #(= (:venue %) "Meilahden liikuntakeskus"))

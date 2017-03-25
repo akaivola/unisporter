@@ -10,11 +10,18 @@
   (str "/reservations/" (apply str (interpose "/" args))))
 
 (defn reservations [uid]
-  (r/wcar*
-    (car/scan 0 :match (prefix "*" uid))))
+  (->> (car/wcar r/conn (car/scan 0 :match (prefix "*" uid)))
+       second
+       (mapv #(car/wcar r/conn (car/get %)))))
+
+(defn reservation [uid activity-id]
+  (car/wcar r/conn (car/get (prefix activity-id uid))))
 
 (defn delete-reservation [uid activity-id]
-  (car/wcar r/conn (car/del (prefix activity-id uid))))
+  (when-let [reservation (reservation uid activity-id)]
+    (do
+      (car/wcar r/conn (car/del (prefix activity-id uid)))
+      reservation)))
 
 (defn- parse-hour-before-begins [activity]
   (-> activity
@@ -32,4 +39,5 @@
   (car/wcar r/conn (car/setex
                      (prefix (:id activity) uid)
                      (-> activity parse-hour-before-begins seconds-from-now)
-                     activity)))
+                     activity))
+  activity)
