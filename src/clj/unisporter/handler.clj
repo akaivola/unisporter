@@ -86,7 +86,7 @@
                                  :postback {:payload ({:reserve id} :<< read-string)}}]}]}
          (do
            (messaging/begin-response uid)
-           (->> (reservation/reserve uid (sports/get-activity id))
+           (->> (reservation/reserve uid (sports/activity-details id))
                 (messaging/acknowledge-reservation uid)))
 
          {:object "page"

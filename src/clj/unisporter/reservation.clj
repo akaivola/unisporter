@@ -8,7 +8,7 @@
   (str "/reservations/" (apply str (interpose "/" args))))
 
 (defn reservations [uid]
-  (car/wcar*
+  (r/wcar*
     (car/scan 0 :match (prefix "*" uid))))
 
 (defn delete-reservation [uid activity-id]
