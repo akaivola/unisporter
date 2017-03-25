@@ -10,14 +10,12 @@
     [environ.core :refer [env]]
     [manifold.deferred]
     [unisporter.redis.config :as r]
-    [unisporter.session :as session]
     [unisporter.messaging :as messaging]
     [ring.util.http-response :refer [ok found internal-server-error not-found bad-request content-type set-cookie unauthorized forbidden]]
     [schema.core :as s]
     [selmer.parser :as selmer]
     [unisporter.middleware.basic-auth :as auth-middleware]
     [unisporter.reservation :as reservation]
-    [unisporter.session :as uni-session]
     [unisporter.sports :as sports]
     [taoensso.timbre :refer [spy debug warn]]))
 

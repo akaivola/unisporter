@@ -21,10 +21,7 @@
                  [selmer "1.10.5"] ; template parser
                  [clj-http "3.4.1"] ; http client
                  [com.taoensso/carmine "2.15.1"] ; redis
-                 [com.cemerick/url "0.1.1"]
-                 [clj-redis-session "2.1.0" :exclusions [com.taoensso/carmine
-                                                         org.clojure/clojure
-                                                         ring/ring-core]]]
+                 [com.cemerick/url "0.1.1"]]
 
   :plugins [[lein-ancient "0.6.10"]
             [lein-environ "1.1.0"]
