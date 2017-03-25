@@ -30,12 +30,12 @@
   (-> (f/formatter "HH:mm")
       (f/with-locale (Locale. "fi" "FI"))))
 
-(defn- datestr->humantime [t]
+(defn datestr->humantime [t]
   (->> t
        c/from-string
        (f/unparse formatter)))
 
-(defn- datestr-short->humantime [t]
+(defn datestr-short->humantime [t]
   (->> t
       c/from-string
       (f/unparse short-formatter)))

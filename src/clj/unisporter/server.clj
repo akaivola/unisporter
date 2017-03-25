@@ -36,6 +36,7 @@
   (.close @server))
 
 (defn start-workers []
+  (future (start-repl! 4002))
   (worker/register-workers)
   (a/go-loop []
     (a/<! (a/timeout (* 1000

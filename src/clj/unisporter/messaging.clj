@@ -1,7 +1,9 @@
 (ns unisporter.messaging
   (:require
    [unisporter.util.http :as http]
+   [unisporter.sports :as s]
    [environ.core :refer [env]]
+
    [buddy.core.mac :as mac]
    [buddy.core.codecs :as codecs]
    [taoensso.timbre :refer [spy debug]]))
@@ -71,10 +73,7 @@
 (def url (str "https://graph.facebook.com/v2.6/me/messages"))
 
 (def standard-buttons
-  [{:title   "Hae lista uudelleen"
-    :type    "postback"
-    :payload "refresh-spinnings"}
-   {:title   "Varauksesi"
+  [{:title   "Varaukseni"
     :type    "postback"
     :payload "view-reservations"}])
 
@@ -119,54 +118,97 @@
              {:form-params      {:access_token (:page-access-token env)
                                  :recipient    {:id uid}
                                  :message      {:text msg}
-                                        ;:appsecret_proof
-                                 #_            (-> (mac/hash (app-access-token) {:key (:app-secret env) :alg :hmac+sha256} )
-                                                   (codecs/bytes->hex))}
+                                 ;:appsecret_proof
+                                 #_(-> (mac/hash (app-access-token) {:key (:app-secret env) :alg :hmac+sha256} )
+                                       (codecs/bytes->hex))}
               :content-type     :json
               :throw-exceptions false}))
 
-(defn send-spinnings [uid items]
-  (http/post
-    url
-    {:form-params
-     {:access_token (:page-access-token env)
-      :recipient    {:id uid}
-      :message
-      {:attachment
-       {:type "template"
-        :payload
-        {:template_type     "list"
-         :top_element_style "compact"
-         :elements
-         (for [{:keys [id name instructors startTime endTime]} items
-               :let   [{:keys [firstName lastName]} (first instructors)]]
-           {:title    (format "%s, %s %s" name lastName firstName)
-            :subtitle (format "%s - %s" startTime endTime)
-            :buttons  [{:title (str "Varaa " name)
-                        :type  "postback"
-                        :payload
-                        (print-str
-                          {:reserve id})}]})
-         :buttons           standard-buttons}}}}
-     :content-type     :json
-     :throw-exceptions false}))
+(defn send-spinnings [uid many-items]
+  (doseq [items (partition 4 4 nil many-items)]
+    (http/post
+      url
+      {:form-params
+       {:access_token (:page-access-token env)
+        :recipient    {:id uid}
+        :message
+        {:attachment
+         {:type "template"
+          :payload
+          (merge
+            {:template_type     "generic"
+             :elements
+             (for [{:keys [id name instructors startTime endTime]} items
+                   :let                                            [{:keys [firstName lastName]} (first instructors)]]
+               {:title    (format "%s, %s %s" name lastName firstName)
+                :subtitle (format "%s - %s" startTime endTime)
+                :buttons  [{:title (str "Varaa")
+                            :type  "postback"
+                            :payload
+                            (print-str
+                              {:reserve id})}]})
+             :buttons           standard-buttons}
+            (when (not= 1 (count items))
+              {:template_type     "list"
+               :top_element_style "compact"}))}}}
+       :content-type     :json
+       :throw-exceptions false})))
 
-(defn send-reservations [uid reservations]
-  (http/post
-    url
-    {:form-params
-     {:access_token (:page-access-token env)
-      :recipient    {:id uid}
-      :message
-      {:attachment
-       {:type "template"
-        :payload
-        {:template_type     "list"
-         :top_element_style "compact"
-         :elements          []
-         :buttons           standard-buttons}}}}
-     :content-type     :json
-     :throw-exceptions false}))
+(defn send-reservations [uid many-reservations]
+  (doseq [reservations (partition 4 4 nil many-reservations)]
+    (spy
+      (http/post
+        url
+        {:form-params
+         {:access_token (:page-access-token env)
+          :recipient    {:id uid}
+          :message
+          {:attachment
+           {:type "template"
+            :payload
+            (spy
+              (merge
+                {:template_type "generic"
+                 :elements
+                 (for [{:keys [id name instructors startTime endTime]} reservations
+                       :let                                            [{:keys [firstName lastName]} (first instructors)]]
+                   {:title    (format "%s, %s %s" name lastName firstName)
+                    :subtitle (format "%s - %s"
+                                      (s/datestr->humantime startTime)
+                                      (s/datestr-short->humantime endTime))
+                    :buttons  [{:title (str "Poista")
+                                :type  "postback"
+                                :payload
+                                (print-str
+                                  {:delete-reservation id})}]})}
+                (when (not= 1 (count reservations))
+                  {:template_type     "list"
+                   :top_element_style "compact"})))}}}
+         :content-type     :json
+         :throw-exceptions false}))))
 
 (defn acknowledge-reservation [uid reservation]
-  )
+  (http/post
+    url
+    {:form-params
+     {:access_token (:page-access-token env)
+      :recipient    {:id uid}
+      :message
+      {:attachment
+       {:type "template"
+        :payload
+        {:template_type "generic"
+         :elements
+         [(let [{:keys [id name instructors startTime endTime]} reservation
+                {:keys [firstName lastName]}                    (first instructors)]
+            {:title    (format "%s, %s %s" name lastName firstName)
+             :subtitle (format "%s - %s"
+                               (s/datestr->humantime startTime)
+                               (s/datestr-short->humantime endTime))
+             :buttons  [{:title (str "Poista")
+                         :type  "postback"
+                         :payload
+                         (print-str
+                           {:delete-reservation id})}]})]}}}}
+     :content-type     :json
+     :throw-exceptions false}))

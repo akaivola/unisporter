@@ -93,7 +93,16 @@
           :entry  [{:messaging [{:sender   {:id uid}
                                  :postback {:payload "refresh-spinnings"}}]}]}
          (do
+           (messaging/sendmsg uid "Tässä täynnä olevat spinningit tällä hetkellä:")
            (messaging/begin-response uid)
+           (debug (messaging/send-spinnings uid (sports/spinnings))))
+
+         {:object "page"
+          :entry [{:messaging [{:sender {:id uid}
+                                :message {:text _}}]}]}
+         (do
+           (messaging/begin-response uid)
+           (messaging/sendmsg uid "Tässä täynnä olevat spinningit tällä hetkellä:")
            (debug (messaging/send-spinnings uid (sports/spinnings))))
 
          {:object "page"
@@ -101,7 +110,11 @@
                                  :postback {:payload "view-reservations"}}]}]}
          (do
            (messaging/begin-response uid)
-           (debug (messaging/send-reservations uid (reservation/reservations uid))))
+           (messaging/sendmsg uid "Tässä varauksesi:")
+           (debug
+             (if-let [reservations (not-empty (reservation/reservations uid))]
+               (messaging/send-reservations uid (reservation/reservations uid))
+               (messaging/sendmsg uid "Ei varauksia tällä hetkellä"))))
 
          {:object "page"
           :entry  [{:messaging [{:sender   {:id uid}
@@ -112,10 +125,8 @@
              (debug (messaging/sendmsg uid (str "Varaus poistettu: " name)))))
 
          {:object "page"
-          :entry  [{:messaging [{:sender {:id uid}}]}]}
-         (do
-           (messaging/begin-response uid)
-           (debug (messaging/send-spinnings uid (sports/spinnings))))
+          :entry [{:messaging [{:delivery _}]}]}
+         nil
 
          :else
          (debug "Unknown postback")))
