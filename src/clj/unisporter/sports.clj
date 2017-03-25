@@ -18,7 +18,7 @@
     ; activities, include those as well
     (>= reservations maxReservations)))
 
-(def sport-details-endpoint "https://unisport.fi/yol/web/fi/crud/read/reservable.json"
+(def activity-details-endpoint "https://unisport.fi/yol/web/fi/crud/read/reservable.json"
   ;?id=203182708&details=true
   )
 
@@ -78,5 +78,9 @@
              (map times)))
          vec)))
 
-(defn reservations [uid]
-  )
+(defn activity-details [id]
+  (-> (http/get activity-details-endpoint
+                {:query-params
+                 {:id      id
+                  :details true}})
+      :body))
