@@ -43,7 +43,7 @@
                         (when (:dev? env)
                           30)
                         120)]
-    (info "Worker poll interval at" poll-interval)
+    (info "Worker poll interval at" poll-interval "seconds")
     (a/go-loop []
       (a/<! (a/timeout (* 1000
                           poll-interval)))
