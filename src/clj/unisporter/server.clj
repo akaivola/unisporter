@@ -43,7 +43,7 @@
                         (or
                           (:poll-interval-seconds env)
                           (when (:dev? env)
-                            10)
+                            30)
                           120))))
     (worker/trigger-check-activities)
     (future

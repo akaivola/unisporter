@@ -125,7 +125,8 @@
               :throw-exceptions false}))
 
 (defn send-spinnings [uid many-items]
-  (doseq [items (partition 4 4 nil many-items)]
+  (doseq [items (partition 4 4 nil many-items)
+          :let [single-item? (= 1 (count items))]]
     (http/post
       url
       {:form-params
@@ -142,15 +143,18 @@
                    :let                                            [{:keys [firstName lastName]} (first instructors)]]
                {:title    (format "%s, %s %s" name lastName firstName)
                 :subtitle (format "%s - %s" startTime endTime)
-                :buttons  [{:title (str "Varaa")
-                            :type  "postback"
-                            :payload
-                            (print-str
-                              {:reserve id})}]})
-             :buttons           standard-buttons}
-            (when (not= 1 (count items))
+                :buttons  [(merge
+                             {:title (str "Varaa")
+                              :type  "postback"
+                              :payload
+                              (print-str
+                                {:reserve id})}
+                             (when single-item?
+                               standard-buttons))]})}
+            (when (not single-item?)
               {:template_type     "list"
-               :top_element_style "compact"}))}}}
+               :top_element_style "compact"
+               :buttons           standard-buttons}))}}}
        :content-type     :json
        :throw-exceptions false})))
 
