@@ -41,7 +41,7 @@
   (a/go-loop []
     (a/<! (a/timeout (* 1000
                         (or
-                          (:poll-interval-seconds env)
+                          (some-> (:poll-interval-seconds env) (Integer/parseInt 10))
                           (when (:dev? env)
                             30)
                           120))))
