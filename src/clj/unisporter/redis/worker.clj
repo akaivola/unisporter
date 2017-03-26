@@ -34,7 +34,7 @@
     {:handler (fn [{:keys [message attempt]}]
                 (try
                   (let [[uid activity] message]
-                    (debug "Space for reservations! notifying" uid activity)
+                    (debug "Space for reservation, notifying" uid activity)
                     (messaging/begin-response uid)
                     (messaging/sendmsg uid "Tilaa seuraavassa spinningissä!")
                     (messaging/acknowledge-reservation uid activity)

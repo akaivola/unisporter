@@ -90,24 +90,11 @@
                 (messaging/acknowledge-reservation uid)))
 
          {:object "page"
-          :entry  [{:messaging [{:sender   {:id uid}
-                                 :postback {:payload "refresh-spinnings"}}]}]}
-         (do
-           (messaging/sendmsg uid "Tässä täynnä olevat spinningit tällä hetkellä:")
-           (messaging/begin-response uid)
-           (debug (messaging/send-spinnings uid (sports/spinnings))))
-
-         {:object "page"
-          :entry [{:messaging [{:sender {:id uid}
-                                :message {:text _}}]}]}
-         (do
-           (messaging/begin-response uid)
-           (messaging/sendmsg uid "Tässä täynnä olevat spinningit tällä hetkellä:")
-           (debug (messaging/send-spinnings uid (sports/spinnings))))
-
-         {:object "page"
-          :entry  [{:messaging [{:sender   {:id uid}
-                                 :postback {:payload "view-reservations"}}]}]}
+          :entry  [{:messaging ((:or [{:sender   {:id uid}
+                                        :postback {:payload "view-reservations"}}]
+                                      [{:sender  {:id uid}
+                                        :message {:text ("varaukseni" :<< clojure.string/lower-case)}}])
+                                :guard some?)}]}
          (do
            (messaging/begin-response uid)
            (messaging/sendmsg uid "Tässä varauksesi:")
@@ -115,6 +102,16 @@
              (if-let [reservations (not-empty (reservation/reservations uid))]
                (messaging/send-reservations uid (reservation/reservations uid))
                (messaging/sendmsg uid "Ei varauksia tällä hetkellä"))))
+
+         {:object "page"
+          :entry [{:messaging (:or [{:sender   {:id uid}
+                                     :postback {:payload "refresh-spinnings"}}]
+                                   [{:sender  {:id uid}
+                                     :message {:text _}}])}]}
+         (do
+           (messaging/begin-response uid)
+           (messaging/sendmsg uid "Tässä täynnä olevat spinningit tällä hetkellä:")
+           (debug (messaging/send-spinnings uid (sports/spinnings))))
 
          {:object "page"
           :entry  [{:messaging [{:sender   {:id uid}

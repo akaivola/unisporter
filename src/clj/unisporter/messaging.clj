@@ -137,20 +137,20 @@
          {:type "template"
           :payload
           (merge
-            {:template_type     "generic"
+            {:template_type "generic"
              :elements
              (for [{:keys [id name instructors startTime endTime]} items
                    :let                                            [{:keys [firstName lastName]} (first instructors)]]
                {:title    (format "%s, %s %s" name lastName firstName)
                 :subtitle (format "%s - %s" startTime endTime)
-                :buttons  [(merge
-                             {:title (str "Varaa")
+                :buttons  (concat
+                            [{:title (str "Varaa")
                               :type  "postback"
                               :payload
                               (print-str
-                                {:reserve id})}
-                             (when single-item?
-                               standard-buttons))]})}
+                                {:reserve id})}]
+                            (when single-item?
+                              standard-buttons))})}
             (when (not single-item?)
               {:template_type     "list"
                :top_element_style "compact"
