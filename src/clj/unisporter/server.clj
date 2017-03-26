@@ -38,20 +38,22 @@
 (defn start-workers []
   (future (start-repl! 4002))
   (worker/register-workers)
-  (a/go-loop []
-    (a/<! (a/timeout (* 1000
-                        (or
-                          (some-> (:poll-interval-seconds env) (Integer/parseInt 10))
-                          (when (:dev? env)
-                            30)
-                          120))))
-    (worker/trigger-check-activities)
-    (future
-      (http/get (if (:dev? env)
-                  "http://localhost:4000/ping"
-                  "https://unisporter.herokuapp.com/ping")
-                {:throw-exceptions false}))
-    (recur)))
+  (let [poll-interval (or
+                        (some-> (:poll-interval-seconds env) (Integer/parseInt 10))
+                        (when (:dev? env)
+                          30)
+                        120)]
+    (info "Worker poll interval at" poll-interval)
+    (a/go-loop []
+      (a/<! (a/timeout (* 1000
+                          poll-interval)))
+      (worker/trigger-check-activities)
+      (future
+        (http/get (if (:dev? env)
+                    "http://localhost:4000/ping"
+                    "https://unisporter.herokuapp.com/ping")
+                  {:throw-exceptions false}))
+      (recur))))
 
 (defn -main [& args]
   (if (= "worker" (first args))
