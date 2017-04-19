@@ -48,7 +48,7 @@
       (a/<! (a/timeout (* 1000
                           poll-interval)))
       (worker/trigger-check-activities)
-      (future
+      #_(future
         (http/get (if (:dev? env)
                     "http://localhost:4000/ping"
                     "https://unisporter.herokuapp.com/ping")

@@ -91,9 +91,9 @@
 
          {:object "page"
           :entry  [{:messaging ((:or [{:sender   {:id uid}
-                                        :postback {:payload "view-reservations"}}]
-                                      [{:sender  {:id uid}
-                                        :message {:text ("varaukseni" :<< clojure.string/lower-case)}}])
+                                       :postback {:payload "view-reservations"}}]
+                                     [{:sender  {:id uid}
+                                       :message {:text ("varaukseni" :<< clojure.string/lower-case)}}])
                                 :guard some?)}]}
          (do
            (messaging/begin-response uid)
