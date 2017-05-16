@@ -9,18 +9,18 @@
                  ; Clojure
                  [aleph "0.4.3"]
                  [buddy/buddy-auth "1.4.0"]
-                 [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
                  [compojure "1.5.2"]
-                 [environ "1.1.0"]
+                 [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
                  [metosin/compojure-api "1.2.0-alpha4"]
                  [metosin/ring-http-response "0.8.1"]
-                 [org.clojure/tools.logging "0.3.1"]
-                 [org.clojure/tools.nrepl "0.2.12"]
                  [ring "1.5.1"]
                  [ring/ring-defaults "0.2.2"]
-                 [selmer "1.10.5"] ; template parser
+                 [environ "1.1.0"]
+                 [org.clojure/tools.logging "0.3.1"]
+                 [org.clojure/tools.nrepl "0.2.12"]
                  [clj-http "3.4.1"] ; http client
                  [com.taoensso/carmine "2.15.1"] ; redis
+                 [uswitch/lambada "0.1.2"]
                  [com.cemerick/url "0.1.1"]]
 
   :plugins [[lein-ancient "0.6.10"]
