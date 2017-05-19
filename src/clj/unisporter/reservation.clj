@@ -43,9 +43,9 @@
       (t/from-time-zone (t/time-zone-for-id "Europe/Helsinki"))))
 
 (defn seconds-from-now [begin]
-  (t/in-seconds (t/interval (t/now)
-                            begin
-                            )))
+  (->> begin
+       (t/interval (t/now))
+       (t/in-seconds)))
 
 (defn reserve [uid activity]
   (car/wcar r/conn (car/setex

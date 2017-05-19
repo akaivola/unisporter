@@ -3,9 +3,6 @@
    [unisporter.util.http :as http]
    [unisporter.sports :as s]
    [environ.core :refer [env]]
-
-   [buddy.core.mac :as mac]
-   [buddy.core.codecs :as codecs]
    [taoensso.timbre :refer [spy debug]]))
 
 (def fixture
@@ -95,38 +92,18 @@
   (mark-seen uid)
   (typing-on uid))
 
-(defn compute-app-access-token []
-  (some-> (http/get "https://graph.facebook.com/oauth/access_token"
-                    {:query-params     {:client_id     (:app-id env)
-                                        :client_secret (:app-secret env)
-                                        :grant_type    "client_credentials"
-                                        :redirect_uri
-                                        (if (:dev? env)
-                                          (spy (:ngrok env))
-                                          "https://unisporter.herokuapp.com/messenger/callback")}
-                     :throw-exceptions false})
-      :body
-      ((fn [foo] (do (debug foo) foo)))
-      (clojure.string/split #"\|")
-      last))
-
-(def app-access-token
-  (memoize compute-app-access-token))
-
 (defn sendmsg [uid msg]
-  (http/post url
-             {:form-params      {:access_token (:page-access-token env)
-                                 :recipient    {:id uid}
-                                 :message      {:text msg}
-                                 ;:appsecret_proof
-                                 #_(-> (mac/hash (app-access-token) {:key (:app-secret env) :alg :hmac+sha256} )
-                                       (codecs/bytes->hex))}
-              :content-type     :json
-              :throw-exceptions false}))
+  (http/post
+    url
+    {:form-params      {:access_token (:page-access-token env)
+                        :recipient    {:id uid}
+                        :message      {:text msg}}
+     :content-type     :json
+     :throw-exceptions false}))
 
 (defn send-spinnings [uid many-items]
   (doseq [items (partition 4 4 nil many-items)
-          :let [single-item? (= 1 (count items))]]
+          :let  [single-item? (= 1 (count items))]]
     (http/post
       url
       {:form-params
