@@ -3,6 +3,7 @@
                  [com.taoensso/timbre "4.8.0"]
                  [org.clojure/core.async "0.3.442"]
                  [org.clojure/core.match "0.3.0-alpha4"]
+                 [clj-time "0.13.0"]
                  [cheshire "5.7.1"]
                  [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
                  [environ "1.1.0"]
