@@ -8,7 +8,13 @@
 (def lambdas (atom #{}))
 
 (defn make-parameters-for-selmer [lambdaname method path]
-  {:lambda-name lambdaname
+  {:lambda-name
+   (-> (map
+         string/capitalize
+         (clojure.string/split
+           lambdaname
+           #"\."))
+       string/join)
    :path        path
    :handler     lambdaname
    :method      (name method)})
