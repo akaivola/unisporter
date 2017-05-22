@@ -7,19 +7,11 @@
                  [org.clojure/core.match "0.3.0-alpha4"]
 
                  ; Clojure
-                 [aleph "0.4.3"]
-                 [buddy/buddy-auth "1.4.0"]
-                 [compojure "1.5.2"]
                  [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
-                 [metosin/compojure-api "1.2.0-alpha4"]
-                 [metosin/ring-http-response "0.8.1"]
-                 [ring "1.5.1"]
-                 [ring/ring-defaults "0.2.2"]
                  [environ "1.1.0"]
                  [org.clojure/tools.logging "0.3.1"]
                  [org.clojure/tools.nrepl "0.2.12"]
                  [clj-http "3.4.1"] ; http client
-                 [com.taoensso/carmine "2.15.1"] ; redis
                  [uswitch/lambada "0.1.2"]
                  [com.cemerick/url "0.1.1"]]
 
@@ -54,7 +46,6 @@
    :dev
    {:dependencies [[refactor-nrepl "2.3.0"]
                    [snipsnap "0.2.0" :exclusions [org.clojure/clojure]]]
-    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
     :plugins [[cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]]
     :env {:dev? "true"}}
 
@@ -63,8 +54,6 @@
              :aot            :all
              :omit-source    true
              :resource-paths ["resources"]}}
-
-  :main unisporter.server
 
   :aot []
 
