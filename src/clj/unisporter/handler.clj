@@ -5,6 +5,8 @@
     [unisporter.messaging :as messaging]
     [unisporter.reservation :as reservation]
     [unisporter.sports :as sports]
+    [unisporter.util.lambda :refer [defulambdafn]]
+    [unisporter.template.cloudformation :refer [render-template!]]
     [taoensso.timbre :refer [spy debug warn]]))
 
 (defn route-postback [postback]
@@ -56,15 +58,20 @@
          :else
          (debug "Unknown postback")))
 
-(api/defapi messenger
-  (api/context "/messenger" request
-    (api/GET "/callback" {query-params :query-params}
-      (ok (when (= (get query-params "hub.verify_token")
-                   (:verify-token env))
-            (get query-params "hub.challenge"))))
-    (api/POST "/callback" []
-      :body [postback {s/Any s/Any}]
-      :header-params [x-hub-signature :- (s/maybe s/Str)]
+(defulambdafn
+  callback
+  :get
+  "/callback"
+  [{:keys [verify-token hub-challenge]} context]
+  (when (= verify-token (:verify-token env))
+    hub-challenge))
 
-      (future (route-postback postback))
-      (ok))))
+(defulambdafn
+  callback
+  :post
+  "/callback"
+  [postback context]
+  (future (route-postback postback))
+  nil)
+
+(render-template!)

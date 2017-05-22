@@ -1,23 +1,28 @@
 (ns unisporter.util.lambda
   (:require
    [uswitch.lambada.core :refer [deflambdafn]]
+   [unisporter.template.cloudformation :as template]
+   [clojure.string :as string]
    [cheshire.core :as json]
    [clojure.java.io :as io]))
 
-(defmacro defulambdafn [name [body context] & fnbody]
-  (let [lambda-name (symbol (str *ns* "." name))]
+(defmacro defulambdafn [fnname method path [body context] & fnbody]
+  (let [lambda-name (template/generate-name fnname method)]
+    (template/add-lambda! lambda-name method path)
     `(deflambdafn
-       ~lambda-name
+       ~(symbol lambda-name)
        [in# out# context#]
        (let [~body    (-> in# io/reader (json/parse-stream keyword))
              ~context context#
-             result#  ~@fnbody]
+             result#  (do
+                        ~@fnbody)]
          (with-open [w# (io/writer out#)]
            (json/generate-stream
              result#
-             w))
+             w#))
          result#))))
 
-#_(macroexpand '(defulambdafn foo [body context]
-                (let [foo "bar"]
-                  foo)))
+(macroexpand-1
+  '(defulambdafn foo :get "/foo" [body context]
+     (let [foo "bar"]
+       foo)))

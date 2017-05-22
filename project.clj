@@ -11,7 +11,8 @@
                  [org.clojure/tools.nrepl "0.2.12"]
                  [clj-http "3.4.1"] ; http client
                  [uswitch/lambada "0.1.2"]
-                 [com.cemerick/url "0.1.1"]]
+                 [com.cemerick/url "0.1.1"]
+                 [selmer "1.10.7"]]
 
   :plugins [[lein-ancient "0.6.10"]
             [lein-environ "1.1.0"]
@@ -53,7 +54,7 @@
              :omit-source    true
              :resource-paths ["resources"]}}
 
-  :aot []
+  :aot [unisporter.handler]
 
   :uberjar-name "unisporter.jar"
 
