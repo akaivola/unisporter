@@ -1,1 +1,16 @@
-template.yml
+/*.log
+/target
+/*-init.clj
+/resources/public/js/compiled
+/resources/public/css/compiled
+out
+.#*
+.lein-env
+.lein-repl-history
+.lein-failures
+.idea
+iamfoxy.iml
+.nrepl-port
+profiles.clj
+.DS_STORE
+/output
