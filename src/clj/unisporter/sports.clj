@@ -5,7 +5,6 @@
    [clj-time.coerce :as c]
    [clj-time.core :as t]
    [clj-time.format :as f]
-   [manifold.deferred :as d]
    [taoensso.timbre :refer [spy debug]]))
 
 (def meilahti? #(= (:venue %) "Meilahden liikuntakeskus"))
@@ -66,8 +65,7 @@
                           c/to-local-date
                           (.toString))
                     (range 1 8))]
-    (->> (apply d/zip (map (fn [date] (d/future (activities date))) weekrange))
-         deref
+    (->> (map deref (map (fn [date] (future (activities date))) weekrange))
          flatten
          (eduction
            (comp

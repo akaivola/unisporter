@@ -4,7 +4,7 @@
    [cheshire.core :as json]
    [clojure.java.io :as io]))
 
-(defmacro lambdafn []
+(defmacro defulambdafn []
   `(deflambdafn [in out context]
      (let [body (-> in io/reader (json/parse-stream keyword))])
     )

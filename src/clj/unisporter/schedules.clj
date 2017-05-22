@@ -4,7 +4,7 @@
    [unisporter.redis.config :as r]
    [unisporter.reservation :as reservation]
    [unisporter.sports :as sports]
-   [unisporter.util.lambda :refer [lambdafn]]
+   [unisporter.util.lambda :refer [defulambdafn]]
    [taoensso.timbre :refer [spy debug]]))
 
 (defn add-notification [uid activity]
@@ -38,12 +38,12 @@
       {:status :success}))
   )
 
-(lambdafn check-activities
+(defulambdafn check-activities
   [_ context]
   (check-activities)
   nil)
 
-(lambdafn notify-availability
+(defulambdafn notify-availability
   [in context]
   (notify-availability uid activity)
   )
