@@ -59,6 +59,16 @@
          (debug "Unknown postback")))
 
 (defulambdafn
+  test
+  :get
+  "/test"
+  [in context]
+  (debug in)
+  {:statusCode "200"
+   :body "testing"}
+  in)
+
+(defulambdafn
   callback
   :get
   "/callback"

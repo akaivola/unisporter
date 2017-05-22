@@ -22,7 +22,7 @@
              w#))
          result#))))
 
-(macroexpand-1
+#_(macroexpand-1
   '(defulambdafn foo :get "/foo" [body context]
      (let [foo "bar"]
        foo)))
