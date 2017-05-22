@@ -1,0 +1,15 @@
+  {{ lambda-name }}:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: {{ handler }}
+      Runtime: java8
+      Role:
+        Fn::ImportValue:
+          !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+      Events:
+        GetEvent:
+          Type: Api
+          Properties:
+            Path: {{ path }}
+            Method: {{ method }}
+
