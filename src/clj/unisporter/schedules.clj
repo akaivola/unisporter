@@ -1,11 +1,10 @@
 (ns unisporter.schedules
   (:require
    [unisporter.messaging :as messaging]
-   [unisporter.redis.config :as r]
    [unisporter.reservation :as reservation]
    [unisporter.sports :as sports]
    [unisporter.util.lambda :refer [defulambdafn]]
-   [taoensso.timbre :refer [spy debug]]))
+   [taoensso.timbre :refer [spy info debug]]))
 
 (defn add-notification [uid activity]
   (debug "implement add-notification"))
@@ -27,23 +26,13 @@
 
 (defn notify-availability [uid activity]
   (try
-    (let [[uid activity] message]
-      (debug "Space for reservation, notifying" uid activity)
-      (messaging/begin-response uid)
-      (messaging/sendmsg uid "Tilaa seuraavassa spinningissä!")
-      (messaging/acknowledge-reservation uid activity)
-      (reservation/delete-reservation uid (:id activity)))
+    (debug "Space for reservation, notifying" uid activity)
+    (messaging/begin-response uid)
+    (messaging/sendmsg uid "Tilaa seuraavassa spinningissä!")
+    (messaging/acknowledge-reservation uid activity)
+    (reservation/delete-reservation uid (:id activity))
     {:status :success}
     (catch Exception _
       {:status :success}))
   )
 
-(defulambdafn check-activities
-  [_ context]
-  (check-activities)
-  nil)
-
-(defulambdafn notify-availability
-  [in context]
-  (notify-availability uid activity)
-  )
