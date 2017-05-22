@@ -4,9 +4,20 @@
    [cheshire.core :as json]
    [clojure.java.io :as io]))
 
-(defmacro defulambdafn []
-  `(deflambdafn [in out context]
-     (let [body (-> in io/reader (json/parse-stream keyword))])
-    )
-  )
+(defmacro defulambdafn [name [body context] & fnbody]
+  (let [lambda-name (symbol (str *ns* "." name))]
+    `(deflambdafn
+       ~lambda-name
+       [in# out# context#]
+       (let [~body    (-> in# io/reader (json/parse-stream keyword))
+             ~context context#
+             result#  ~@fnbody]
+         (with-open [w# (io/writer out#)]
+           (json/generate-stream
+             result#
+             w))
+         result#))))
 
+#_(macroexpand '(defulambdafn foo [body context]
+                (let [foo "bar"]
+                  foo)))
