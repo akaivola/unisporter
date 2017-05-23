@@ -66,7 +66,7 @@
   (debug in)
   {:statusCode "200"
    :body "testing"}
-  in)
+  )
 
 (defulambdafn
   callback
