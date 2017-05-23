@@ -3,8 +3,6 @@
    [clojure.string :as string]
    [selmer.parser :refer [render-file]]))
 
-(render-file "templates/header.yml" {})
-
 (def lambdas (atom #{}))
 
 (defn make-parameters-for-selmer [lambdaname method path]
