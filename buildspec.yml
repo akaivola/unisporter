@@ -11,3 +11,5 @@ artifacts:
   files:
     - target/unisporter.jar
     - template-export.json
+  discard-paths: yes
+
