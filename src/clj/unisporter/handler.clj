@@ -84,4 +84,5 @@
   (future (route-postback postback))
   nil)
 
-(render-template!)
+(when (System/getenv "BUILD")
+  (render-template!))
