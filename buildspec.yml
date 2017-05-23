@@ -5,14 +5,11 @@ phases:
     commands:
       - echo Entering build phase...
       - echo Build started on `date`
-      - bin/lein uberjar
-      - unzip target/unisporter.jar -d output
+      - bin/lein do compile, libdir
+      - mv target/classes/* ./
       - rm -rf src target test
       - aws cloudformation package --template template.yml --s3-bucket $S3_BUCKET --output-template template-export.json
-      - mv template-export.json output
 artifacts:
   files:
-    - '**/*'
     - template-export.json
-  base-directory: output
 

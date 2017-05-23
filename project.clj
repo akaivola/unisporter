@@ -16,7 +16,8 @@
 
   :plugins [[lein-ancient "0.6.10"]
             [lein-environ "1.1.0"]
-            [lein-resource "16.11.1"]]
+            [lein-resource "16.11.1"]
+            [lein-libdir "0.1.1"]]
 
   :min-lein-version "2.5.3"
 
