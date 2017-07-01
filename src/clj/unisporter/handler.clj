@@ -69,19 +69,26 @@
   (debug in)
   (ok "ping"))
 
+(defulambdafn ping
+  :post
+  "/ping"
+  [in context]
+  (debug in)
+  (ok "ping"))
+
 (defulambdafn callback
   :get
   "/callback"
-  [{:keys [verify-token hub-challenge]} context]
-  (if (= verify-token (:verify-token env))
-    (ok hub-challenge)
+  [{query :queryStringParameters} context]
+  (if (= (get query "verify.token") (:verify-token env))
+    (ok (get query "hub.challenge"))
     {:status 403
-     :body ""}))
+     :body   ""}))
 
 (defulambdafn callback
   :post
   "/callback"
-  [postback context]
+  [{postback :body} context]
   (future (route-postback postback))
   (ok "ok"))
 
