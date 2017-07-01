@@ -9,6 +9,7 @@ phases:
     commands:
       - echo Entering build phase...
       - echo Build started on `date`
+      - chmod 755 bin/lein
       - bin/lein do compile, libdir
       - mv target/classes/* ./
       - rm -rf src target test
