@@ -80,8 +80,8 @@
   :get
   "/callback"
   [{query :queryStringParameters} context]
-  (if (= (get query "verify.token") (:verify-token env))
-    (ok (get query "hub.challenge"))
+  (if (= (:verify.token query) (:verify-token env))
+    (ok (:hub.challenge query))
     {:statusCode "403"
      :body       ""}))
 
