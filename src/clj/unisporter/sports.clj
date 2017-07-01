@@ -72,7 +72,7 @@
             (filter meilahti?)
             (filter spinning?)
             (filter #(not (:cancelled %)))
-            ((filter full?)
+            (filter full?)
             (map times)))
         vec)))
 
