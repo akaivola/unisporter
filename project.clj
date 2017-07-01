@@ -12,7 +12,8 @@
                  [clj-http "3.4.1"] ; http client
                  [uswitch/lambada "0.1.2"]
                  [com.cemerick/url "0.1.1"]
-                 [selmer "1.10.7"]]
+                 [selmer "1.10.7"]
+                 [com.taoensso/faraday "1.9.0"]]
 
   :plugins [[lein-ancient "0.6.10"]
             [lein-environ "1.1.0"]
@@ -24,8 +25,8 @@
   :source-paths ["src/clj"]
   :resource-paths ["resources"]
   :test-paths ["test/clj"]
-  :test-refresh {:quiet false ; set to true to disable 'Testing blah.blah.your-test' printing
-                 :watch-dirs ["src" "test"]
+  :test-refresh {:quiet        false ; set to true to disable 'Testing blah.blah.your-test' printing
+                 :watch-dirs   ["src" "test"]
                  :refresh-dirs ["src" "test"]}
   :jvm-opts ^:replace ["-Xmx2g"]
 
@@ -41,13 +42,13 @@
   :profiles
   {:test
    {:dependencies [[pjstadig/humane-test-output "0.8.1"]]
-    :injections [(require 'pjstadig.humane-test-output)
-                 (pjstadig.humane-test-output/activate!)]}
+    :injections   [(require 'pjstadig.humane-test-output)
+                   (pjstadig.humane-test-output/activate!)]}
    :dev
    {:dependencies [[refactor-nrepl "2.3.0"]
                    [snipsnap "0.2.0" :exclusions [org.clojure/clojure]]]
-    :plugins [[cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]]
-    :env {:dev? "true"}}
+    :plugins      [[cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]]
+    :env          {:dev? "true"}}
 
    :uberjar {:prep-tasks     []
              :env            {:production "true"}
@@ -61,4 +62,4 @@
 
   :prep-tasks ["compile"]
 
-  :aliases {"dev"          ["with-profile" "dev" "run"]})
+  :aliases {"dev" ["with-profile" "dev" "run"]})

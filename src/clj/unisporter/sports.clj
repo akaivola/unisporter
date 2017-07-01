@@ -58,23 +58,23 @@
 (defn spinnings [& {:keys [campus sport] :or
                     {campus :m
                      sport  :ryhmaliikunta}}]
-  (let [now (t/now)
+  (let [now       (t/now)
         weekrange (map
                     #(->> (t/days %)
-                          (t/plus now)
-                          c/to-local-date
-                          (.toString))
+                         (t/plus now)
+                         c/to-local-date
+                         (.toString))
                     (range 1 8))]
     (->> (map deref (map (fn [date] (future (activities date))) weekrange))
-         flatten
-         (eduction
-           (comp
-             (filter meilahti?)
-             (filter spinning?)
-             (filter #(not (:cancelled %)))
-             (filter full?)
-             (map times)))
-         vec)))
+        flatten
+        (eduction
+          (comp
+            (filter meilahti?)
+            (filter spinning?)
+            (filter #(not (:cancelled %)))
+            ((filter full?)
+            (map times)))
+        vec)))
 
 (defn activity-details [id]
   (-> (http/get activity-details-endpoint

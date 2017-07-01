@@ -9,6 +9,10 @@
     [unisporter.template.cloudformation :refer [render-template!]]
     [taoensso.timbre :refer [spy debug warn]]))
 
+(defn ok [body]
+  {:status 200
+   :body body})
+
 (defn route-postback [postback]
   (match (spy postback)
          {:object "page"
@@ -58,31 +62,28 @@
          :else
          (debug "Unknown postback")))
 
-(defulambdafn
-  test
+(defulambdafn ping
   :get
-  "/test"
+  "/ping"
   [in context]
   (debug in)
-  {:statusCode "200"
-   :body "testing"}
-  )
+  (ok "ping"))
 
-(defulambdafn
-  callback
+(defulambdafn callback
   :get
   "/callback"
   [{:keys [verify-token hub-challenge]} context]
-  (when (= verify-token (:verify-token env))
-    hub-challenge))
+  (if (= verify-token (:verify-token env))
+    (ok hub-challenge)
+    {:status 403
+     :body ""}))
 
-(defulambdafn
-  callback
+(defulambdafn callback
   :post
   "/callback"
   [postback context]
   (future (route-postback postback))
-  nil)
+  (ok "ok"))
 
 (when (System/getenv "BUILD")
   (render-template!))

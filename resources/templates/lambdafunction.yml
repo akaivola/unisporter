@@ -3,6 +3,7 @@
     Properties:
       Handler: {{ handler }}
       Runtime: java8
+      MemorySize: 512
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
