@@ -10,8 +10,8 @@
     [taoensso.timbre :refer [spy debug warn]]))
 
 (defn ok [body]
-  {:status 200
-   :body body})
+  {:statusCode "200"
+   :body       body})
 
 (defn route-postback [postback]
   (match (spy postback)
@@ -82,8 +82,8 @@
   [{query :queryStringParameters} context]
   (if (= (get query "verify.token") (:verify-token env))
     (ok (get query "hub.challenge"))
-    {:status 403
-     :body   ""}))
+    {:statusCode "403"
+     :body       ""}))
 
 (defulambdafn callback
   :post
