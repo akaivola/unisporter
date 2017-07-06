@@ -1,13 +1,13 @@
 (ns unisporter.handler
   (:require
-    [clojure.core.match :refer [match]]
-    [environ.core :refer [env]]
-    [unisporter.messaging :as messaging]
-    [unisporter.reservation :as reservation]
-    [unisporter.sports :as sports]
-    [unisporter.util.lambda :refer [defulambdafn]]
-    [unisporter.template.cloudformation :refer [render-template!]]
-    [taoensso.timbre :refer [spy debug warn]]))
+   [clojure.core.match :refer [match]]
+   [unisporter.messaging :as messaging]
+   [unisporter.reservation :as reservation]
+   [unisporter.sports :as sports]
+   [unisporter.util.lambda :refer [defulambdafn]]
+   [unisporter.template.cloudformation :refer [render-template!]]
+   [unisporter.secrets :refer [env]]
+   [taoensso.timbre :refer [spy debug warn]]))
 
 (defn ok [body]
   {:statusCode "200"
@@ -80,7 +80,9 @@
   :get
   "/callback"
   [{query :queryStringParameters} context]
-  (if (= (:verify.token query) (:verify-token env))
+  (if (and (not-empty (:verify-token env))
+           (not-empty (:verify.token query))
+           (= (:verify.token query) (:verify-token env)))
     (ok (:hub.challenge query))
     {:statusCode "403"
      :body       ""}))

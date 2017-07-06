@@ -2,7 +2,7 @@
   (:require
    [unisporter.util.http :as http]
    [unisporter.sports :as s]
-   [environ.core :refer [env]]
+   [unisporter.secrets :refer [env]]
    [taoensso.timbre :refer [spy debug]]))
 
 (def fixture
@@ -76,16 +76,16 @@
 
 (defn mark-seen [uid]
   (http/post url
-             {:form-params {:access_token  (:page-access-token env)
-                            :recipient     {:id uid}
-                            :sender_action "mark_seen"}
+             {:form-params      {:access_token  (:page-access-token env)
+                                 :recipient     {:id uid}
+                                 :sender_action "mark_seen"}
               :throw-exceptions false}))
 
 (defn typing-on [uid]
   (http/post url
-             {:form-params {:access_token (:page-access-token env)
-                            :recipient     {:id uid}
-                            :sender_action "typing_on"}
+             {:form-params      {:access_token  (:page-access-token env)
+                                 :recipient     {:id uid}
+                                 :sender_action "typing_on"}
               :throw-exceptions false}))
 
 (defn begin-response [uid]

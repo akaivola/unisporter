@@ -2,7 +2,7 @@
   (:require
    [clj-time.coerce :as c]
    [clj-time.core :as t]
-   [environ.core :refer [env]]
+   [unisporter.secrets :refer [env]]
    [taoensso.faraday :as far]
    [taoensso.timbre :refer [spy debug]]))
 

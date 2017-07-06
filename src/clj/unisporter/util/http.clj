@@ -4,7 +4,6 @@
    [cheshire.core :as json]
    [clj-http.client :as client]
    [clojure.core.match :refer [match]]
-   [environ.core :refer [env]]
    [taoensso.timbre :refer [spy debug]]))
 
 (def default-params
