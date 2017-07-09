@@ -66,9 +66,10 @@
   :get
   "/ping"
   [in context]
-  (debug in)
-  (println env)
-  (ok "ping"))
+  (do
+    (debug in)
+    (debug (:x-aws-access-key-id env))
+    (ok "ping")))
 
 (defulambdafn ping
   :post
