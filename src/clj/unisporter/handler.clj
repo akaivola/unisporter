@@ -67,7 +67,7 @@
   "/ping"
   [in context]
   (debug in)
-  (debug env)
+  (println env)
   (ok "ping"))
 
 (defulambdafn ping
