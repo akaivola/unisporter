@@ -6,7 +6,7 @@
    [unisporter.sports :as sports]
    [unisporter.util.lambda :refer [defulambdafn]]
    [unisporter.template.cloudformation :refer [render-template!]]
-   [unisporter.secrets :refer [env]]
+   [unisporter.secrets :refer [env] :as secrets]
    [taoensso.timbre :refer [spy debug warn]]))
 
 (defn ok [body]
@@ -67,6 +67,7 @@
   "/ping"
   [in context]
   (debug in)
+  (debug env)
   (ok "ping"))
 
 (defulambdafn ping

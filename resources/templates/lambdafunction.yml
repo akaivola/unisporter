@@ -7,6 +7,10 @@
       Role:
         Fn::ImportValue:
           !Join ['-', [!Ref 'ProjectId', !Ref 'AWS::Region', 'LambdaTrustRole']]
+      Environment:
+        Variables:
+          {% for e in environment }}"{{ e|key }}": "{{ e|val }}"
+          {% endfor %}
       Events:
         GetEvent:
           Type: Api

@@ -1,7 +1,12 @@
 (ns unisporter.template.cloudformation
   (:require
    [clojure.string :as string]
+   [unisporter.secrets :as secrets]
+   [selmer.filters :refer [add-filter!]]
    [selmer.parser :refer [render-file]]))
+
+(add-filter! :key #(-> % key name string/upper-case (string/replace #"-" "_")))
+(add-filter! :val #(-> % val name))
 
 (def lambdas (atom #{}))
 
@@ -15,6 +20,7 @@
        string/join)
    :path        path
    :handler     lambdaname
+   :environment secrets/secrets-for-runtime
    :method      (name method)})
 
 (defn generate-name [fnname method]
@@ -46,4 +52,4 @@
     parameters-for-selmer))
 
 #_(render-template [(make-parameters-for-selmer "foo.bar.baz" :get "/foo/bar/baz")
-                  (make-parameters-for-selmer "foo.bar.baz" :get "/foo/bar/baz")])
+                    (make-parameters-for-selmer "foo.bar.baz" :get "/foo/bar/baz")])
