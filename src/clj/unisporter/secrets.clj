@@ -7,8 +7,8 @@
   (some->
       (ssm/get-parameter
         {:endpoint   "eu-west-1"
-         :access-key (:codebuild-aws-access-key-id environ-env)
-         :secret-key (:codebuild-aws-secret-access-key environ-env)}
+         :access-key (:cdb-aws-access-key-id environ-env)
+         :secret-key (:cdb-aws-secret-access-key environ-env)}
         :name "secrets"
         :with-decryption true)
       :parameter
