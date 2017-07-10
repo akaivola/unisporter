@@ -12,7 +12,10 @@
     `(deflambdafn
        ~(symbol lambda-name)
        [in# out# context#]
-       (let [~body    (-> in# io/reader (json/parse-stream keyword))
+       (let [~body    (-> in#
+                          io/reader
+                          (json/parse-stream keyword)
+                          (update :body json/parse-string keyword))
              ~context context#
              result#  (do
                         ~@fnbody)]
