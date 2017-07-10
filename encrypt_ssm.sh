@@ -1,0 +1,1 @@
+aws ssm put-parameter --key-id arn:aws:kms:eu-west-1:248598588267:key/0c52233a-6d6b-4ceb-a59d-21c09833efaa --value fileb://secrets.edn --profile unisporter --type SecureString --name secrets --region eu-west-1 --overwrite
