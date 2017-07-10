@@ -49,7 +49,7 @@
                                                    com.amazonaws/aws-java-sdk-directory
                                                    com.amazonaws/aws-java-sdk-discovery
                                                    com.amazonaws/aws-java-sdk-dms
-                                                   ;;com.amazonaws/aws-java-sdk-ec2
+                                                   com.amazonaws/aws-java-sdk-ec2
                                                    com.amazonaws/aws-java-sdk-ecr
                                                    com.amazonaws/aws-java-sdk-ecs
                                                    com.amazonaws/aws-java-sdk-efs
@@ -70,7 +70,7 @@
                                                    com.amazonaws/aws-java-sdk-inspector
                                                    com.amazonaws/aws-java-sdk-iot
                                                    com.amazonaws/aws-java-sdk-kinesis
-                                                   ;;com.amazonaws/aws-java-sdk-kms
+                                                   com.amazonaws/aws-java-sdk-kms
                                                    com.amazonaws/aws-java-sdk-lambda
                                                    com.amazonaws/aws-java-sdk-lex
                                                    com.amazonaws/aws-java-sdk-lexmodelbuilding
