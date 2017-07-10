@@ -82,10 +82,10 @@
   :get
   "/callback"
   [{query :queryStringParameters} context]
-  (if (and (not-empty (:verify-token env))
-           (not-empty (:verify.token query))
+  (if (and (not-empty (spy (:verify-token env)))
+           (not-empty (spy (:verify.token query)))
            (= (:verify.token query) (:verify-token env)))
-    (ok (:hub.challenge query))
+    (ok (:hub.challenge (spy query)))
     {:statusCode "403"
      :body       ""}))
 
