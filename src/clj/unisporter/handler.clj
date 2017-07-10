@@ -82,8 +82,8 @@
   :get
   "/callback"
   [{query :queryStringParameters} context]
-  (if (and (not-empty (spy (:verify-token env)))
-           (not-empty (:hub.verify_token (spy query)))
+  (if (and (not-empty (:verify-token env))
+           (not-empty (:hub.verify_token query))
            (= (:hub.verify_token query) (:verify-token env)))
     (ok (:hub.challenge query))
     {:statusCode "403"
@@ -92,8 +92,9 @@
 (defulambdafn callback
   :post
   "/callback"
-  [{postback :body} context]
-  (future (route-postback postback))
+  [in context]
+  (debug in)
+  (future (route-postback (:body in)))
   (ok "ok"))
 
 (when (System/getenv "BUILD")
