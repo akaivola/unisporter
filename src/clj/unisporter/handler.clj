@@ -94,7 +94,7 @@
   "/callback"
   [in context]
   (debug in)
-  (future (route-postback (:body in)))
+  (route-postback (:body in))
   (ok "ok"))
 
 (when (System/getenv "BUILD")
