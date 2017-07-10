@@ -89,8 +89,8 @@
               :throw-exceptions false}))
 
 (defn begin-response [uid]
-  (mark-seen uid)
-  (typing-on uid))
+  (spy (mark-seen uid))
+  (spy (typing-on uid)))
 
 (defn sendmsg [uid msg]
   (http/post
