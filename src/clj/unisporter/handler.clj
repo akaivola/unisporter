@@ -1,13 +1,16 @@
 (ns unisporter.handler
+  (:import [com.amazonaws.services.dynamodbv2.model ConditionalCheckFailedException])
   (:require
    [clojure.core.match :refer [match]]
+   [taoensso.faraday :as far]
    [unisporter.messaging :as messaging]
    [unisporter.reservation :as reservation]
-   [unisporter.sports :as sports]
-   [unisporter.util.lambda :refer [defulambdafn]]
-   [unisporter.template.cloudformation :refer [render-template!]]
    [unisporter.secrets :refer [env] :as secrets]
-   [taoensso.timbre :refer [spy debug warn]]))
+   [unisporter.sports :as sports]
+   [unisporter.template.cloudformation :refer [render-template!]]
+   [unisporter.util.dynamodb :refer [credentials]]
+   [unisporter.util.lambda :refer [defulambdafn]]
+   [taoensso.timbre :refer [spy debug warn info]]))
 
 (defn ok [body]
   {:statusCode "200"
@@ -94,7 +97,16 @@
   "/callback"
   [in context]
   (debug in)
-  (route-postback (:body in))
+  (when-let [id (spy (some-> in :body :entry first :id))]
+    (try
+      (far/put-item
+        credentials
+        :postbacks
+        {:id       id
+         :postback (:body in)}
+        {:cond-expr "attribute_not_exists(id)"})
+      (catch ConditionalCheckFailedException ccfe
+        (info "duplicate postback ignored with id" id))))
   (ok "ok"))
 
 (when (System/getenv "BUILD")
