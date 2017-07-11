@@ -1,20 +1,21 @@
 (defproject unisporter "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [com.taoensso/timbre "4.8.0"]
-                 [org.clojure/core.async "0.3.442"]
                  [org.clojure/core.match "0.3.0-alpha4"]
                  [clj-time "0.13.0"]
                  [cheshire "5.7.1"]
                  [cider/cider-nrepl "0.15.0-SNAPSHOT" :exclusions [org.clojure/clojure]]
                  [environ "1.1.0"]
                  [org.clojure/tools.logging "0.3.1"]
-                 [org.clojure/tools.nrepl "0.2.12"]
                  [clj-http "3.4.1"] ; http client
                  [uswitch/lambada "0.1.2"]
-                 [com.cemerick/url "0.1.1"]
+                 [com.cemerick/url "0.1.1" :exclusions [org.clojure/clojurescript]]
                  [selmer "1.10.7"]
-                 [com.taoensso/faraday "1.9.0"]
-                 [com.amazonaws/aws-java-sdk-core "1.11.155"]
+                 [com.taoensso/faraday "1.9.0" :exclusions [com.taoensso/nippy
+                                                            com.amazonaws/aws-java-sdk-dynamodb
+                                                            com.amazonaws/aws-java-sdk-s3]]
+                 [com.amazonaws/aws-java-sdk-core "1.11.155" :exclusions [commons-logging]]
+                 [com.amazonaws/aws-java-sdk-dynamodb "1.11.155"]
                  [amazonica "0.3.106" :exclusions [com.amazonaws/aws-java-sdk-acm
                                                    com.amazonaws/aws-java-sdk-api-gateway
                                                    com.amazonaws/aws-java-sdk-applicationautoscaling
@@ -49,6 +50,7 @@
                                                    com.amazonaws/aws-java-sdk-directory
                                                    com.amazonaws/aws-java-sdk-discovery
                                                    com.amazonaws/aws-java-sdk-dms
+                                                   com.amazonaws/aws-java-sdk-dynamodb
                                                    com.amazonaws/aws-java-sdk-ec2
                                                    com.amazonaws/aws-java-sdk-ecr
                                                    com.amazonaws/aws-java-sdk-ecs
